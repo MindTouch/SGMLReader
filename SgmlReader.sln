@@ -1,27 +1,35 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SgmlReader", "CommandLine\SgmlReader.csproj", "{606C348A-9A72-4179-9C55-4DD9914C22CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SgmlReaderDll", "SgmlReaderDll\SgmlReaderDll.csproj", "{499527FF-AE52-450F-B3E3-4AD53E1712AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SgmlReaderDll", "sgmlreaderdll\SgmlReaderDll.csproj", "{499527FF-AE52-450F-B3E3-4AD53E1712AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSuite", "TestSuite\TestSuite.csproj", "{8C30F6C5-64E8-4810-B5B5-62782257AEBD}"
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{499527FF-AE52-450F-B3E3-4AD53E1712AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{499527FF-AE52-450F-B3E3-4AD53E1712AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{499527FF-AE52-450F-B3E3-4AD53E1712AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{499527FF-AE52-450F-B3E3-4AD53E1712AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{606C348A-9A72-4179-9C55-4DD9914C22CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{606C348A-9A72-4179-9C55-4DD9914C22CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{606C348A-9A72-4179-9C55-4DD9914C22CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{606C348A-9A72-4179-9C55-4DD9914C22CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C30F6C5-64E8-4810-B5B5-62782257AEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C30F6C5-64E8-4810-B5B5-62782257AEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C30F6C5-64E8-4810-B5B5-62782257AEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C30F6C5-64E8-4810-B5B5-62782257AEBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{606C348A-9A72-4179-9C55-4DD9914C22CC}.Debug.ActiveCfg = Debug|.NET
-		{606C348A-9A72-4179-9C55-4DD9914C22CC}.Debug.Build.0 = Debug|.NET
-		{606C348A-9A72-4179-9C55-4DD9914C22CC}.Release.ActiveCfg = Release|.NET
-		{606C348A-9A72-4179-9C55-4DD9914C22CC}.Release.Build.0 = Release|.NET
-		{499527FF-AE52-450F-B3E3-4AD53E1712AD}.Debug.ActiveCfg = Debug|.NET
-		{499527FF-AE52-450F-B3E3-4AD53E1712AD}.Debug.Build.0 = Debug|.NET
-		{499527FF-AE52-450F-B3E3-4AD53E1712AD}.Release.ActiveCfg = Release|.NET
-		{499527FF-AE52-450F-B3E3-4AD53E1712AD}.Release.Build.0 = Release|.NET
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = CommandLine\SgmlReader.csproj
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
