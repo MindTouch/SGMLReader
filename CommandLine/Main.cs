@@ -3,7 +3,6 @@ using System.Xml;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Windows.Forms;
 using System.Collections;
 
 namespace Sgml {
