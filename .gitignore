@@ -10,7 +10,6 @@ obj/
 *.suo
 _ReSharper.*/
 *.pdb
-*.snk
 *.user
 *.log
 App_Data/
