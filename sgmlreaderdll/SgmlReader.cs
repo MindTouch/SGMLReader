@@ -1413,7 +1413,6 @@ namespace Sgml
                 OpenInput();
             }
 
-            State start = this.m_state;
             if (m_node.Simulated)
             {
                 // return the next node
@@ -1458,7 +1457,6 @@ namespace Sgml
                         {
                             Pop();
                         }
-                        Node n = this.m_node;
                         foundnode = ParseMarkup();
                         break;
                     case State.PartialTag:
