@@ -1,0 +1,13 @@
+﻿`-html
+<html>
+    <body>
+        <script type="text/javascript">/*<![CDATA[*/ /*<![CDATA[*/ test /*]]>*/ /*]]&gt;*/</script>
+    </body>
+</html>
+`
+<html>
+  <body>
+    <script type="text/javascript"><![CDATA[  test  /*]]&gt;*/]]></script>
+  </body>
+</html>
+`

@@ -1,0 +1,8 @@
+﻿`-html -testdoc
+<!-- top --> <b>foo</b>
+`
+<!-- top -->
+<html>
+  <b>foo</b>
+</html>
+`

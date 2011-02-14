@@ -1,0 +1,13 @@
+﻿`-html
+<html>
+<body><span text="foo>bar"/>
+</body>
+</html>
+`
+<html>
+  <body>
+    <span text="foo">bar"/&gt;
+</span>
+  </body>
+</html>
+`

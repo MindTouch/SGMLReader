@@ -1,0 +1,12 @@
+﻿`-html -ignore
+<HTML><BODY> 
+<LINK href="a.css" type="text/css" rel="stylesheet" /> 
+</body> 
+</HTML> 
+`
+<HTML>
+  <BODY>
+  </BODY>
+  <LINK href="a.css" type="text/css" rel="stylesheet" />
+</HTML>
+`

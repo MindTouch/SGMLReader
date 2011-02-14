@@ -1,0 +1,5 @@
+﻿`-html -testdoc
+blah <b>foo</b>
+`
+<html>blah <b>foo</b></html>
+`

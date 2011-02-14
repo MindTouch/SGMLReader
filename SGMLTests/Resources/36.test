@@ -1,0 +1,24 @@
+﻿`-html
+<html> 
+<head> 
+<script language="JavaScript"> 
+<!-- 
+--></script> 
+</head> 
+<body> 
+<p>hello</p> 
+</body> 
+</html> 
+`
+<html>
+  <head>
+    <script language="JavaScript">
+      <!-- 
+-->
+    </script>
+  </head>
+  <body>
+    <p>hello</p>
+  </body>
+</html>
+`

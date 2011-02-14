@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9CC3FC29-375F-44F1-95BE-D52246CC7B3E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SGMLTests</RootNamespace>
+    <AssemblyName>SGMLTests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\redist\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\redist\log4net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="HtmlTests.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\10.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\11.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\12.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\13.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\14.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\15.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\16.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\17.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\18.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\19.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\20.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\21.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\22.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\23.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\24.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\25.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\26.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\27.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\28.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\29.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\30.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\31.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\32.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\33.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\34.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\35.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\36.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\37.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\38.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\39.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\40.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\41.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\42.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\43.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\44.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\45.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\46.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\47.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\48.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\49..test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\50.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\51.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\52.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\09.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\08.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\07.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\06.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\05.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\04.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\03.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\01.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\02.test">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Deployment.LinuxDeployData generatePcFile="false" />
+      </Properties>
+    </MonoDevelop>
+    <VisualStudio />
+  </ProjectExtensions>
+</Project>

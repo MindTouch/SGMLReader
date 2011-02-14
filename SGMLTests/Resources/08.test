@@ -1,0 +1,19 @@
+﻿`-html
+<html>
+<body>
+<script type="text/javascript">/*<![CDATA[*/
+var test = '<div>"test"</div>';
+/*]]>*/</script>
+<p>test</p>
+</body>
+</html>
+`
+<html>
+  <body>
+    <script type="text/javascript"><![CDATA[
+var test = '<div>"test"</div>';
+]]></script>
+    <p>test</p>
+  </body>
+</html>
+`
