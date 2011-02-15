@@ -7,6 +7,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using log4net;
 using NUnit.Framework;
 using Sgml;
 
@@ -20,6 +21,9 @@ namespace SGMLTests {
             DocClone,
             Passthrough
         }
+
+        //--- Class Fields ---
+        private static ILog _log = LogManager.GetLogger(typeof(UnitTests));
 
         //--- Class Methods ---
         private static void Test(string name, XmlRender xmlRender, CaseFolding caseFolding, string doctype, bool format) {

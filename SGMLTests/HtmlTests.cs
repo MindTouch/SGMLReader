@@ -4,6 +4,10 @@
  * 
  */
 
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Xml;
 using NUnit.Framework;
 using Sgml;
 
@@ -277,5 +281,44 @@ namespace SGMLTests {
         public void Clone_document_with_elements_with_missing_closing_tags_52() {
             Test("52.test", XmlRender.DocClone, CaseFolding.None, "html", true);
         }
-   }
+
+        [Test]
+        public void Read_ofx_content_53() {
+            Test("53.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Test_MoveToNextAttribute() {
+
+            // Make sure we can do MoveToElement after reading multiple attributes.
+            var r = new SgmlReader {
+                InputStream = new StringReader("<test id='10' x='20'><a/><!--comment-->test</test>")
+            };
+            Assert.IsTrue(r.Read());
+            while(r.MoveToNextAttribute()) {
+                _log.Debug(r.Name);
+            }
+            if(r.MoveToElement()) {
+                _log.Debug(r.ReadInnerXml());
+            }
+        }
+
+        [Test]
+        public void Test_for_illegal_char_value() {
+            const string source = "&test";
+            var reader = new SgmlReader {
+                DocType = "HTML",
+                WhitespaceHandling = WhitespaceHandling.All,
+                StripDocType = true,
+                InputStream = new StringReader(source),
+                CaseFolding = CaseFolding.ToLower
+            };
+
+            // test
+            var element = System.Xml.Linq.XElement.Load(reader);
+            string value = element.Value;
+            Assert.IsFalse(string.IsNullOrEmpty(value), "element has no value");
+            Assert.AreNotEqual((char)65535, value[value.Length - 1], "unexpected -1 as last char");
+        }
+    }
 }
