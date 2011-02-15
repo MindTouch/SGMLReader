@@ -1,5 +1,4 @@
-﻿`-html -testclone
-<html><body>
+﻿<html><body>
 <p class="MsoNormal">
 	<span style="font-size: 10pt;" arial="" ,="" sans-serif="" ;;="" font-family:dummy:="" font-family:="" font-family:foo:="" arial;="" font-size:="" 13.3333px;="">
 		<span class="Apple-style-span" style="font-family: Arial; font-size: 13.3333px;">-lm</span>
@@ -16,4 +15,3 @@
     </p>
   </body>
 </html>
-`

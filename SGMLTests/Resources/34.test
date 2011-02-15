@@ -1,5 +1,4 @@
-﻿`-html -ignore
-<HTML><BODY> 
+﻿<HTML><BODY> 
 <LINK href="a.css" type="text/css" rel="stylesheet" /> 
 </body> 
 </HTML> 
@@ -9,4 +8,3 @@
   </BODY>
   <LINK href="a.css" type="text/css" rel="stylesheet" />
 </HTML>
-`

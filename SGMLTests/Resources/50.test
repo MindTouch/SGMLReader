@@ -1,5 +1,4 @@
-﻿`-html
-<html><?xml:namespace prefix="st1" ns="urn:schemas-microsoft-com:office:smarttags" />
+﻿<html><?xml:namespace prefix="st1" ns="urn:schemas-microsoft-com:office:smarttags" />
 <body>
 `
 <html>
@@ -7,4 +6,3 @@
   <body>
   </body>
 </html>
-`

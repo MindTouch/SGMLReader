@@ -1,5 +1,4 @@
-﻿`-html
-<html>
+﻿<html>
 <body>
 <table><tr><td>row1<tr><td>row2</td>
 `
@@ -15,4 +14,3 @@
     </table>
   </body>
 </html> 
-`

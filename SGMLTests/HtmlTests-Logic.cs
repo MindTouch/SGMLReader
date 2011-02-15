@@ -16,9 +16,9 @@ namespace SGMLTests {
         //--- Types ---
         private delegate void SgmlReaderTestCallback(SgmlReader reader, XmlWriter xmlWriter);
         private enum XmlRender {
-            Load,
-            Clone,
-            Write
+            Doc,
+            DocClone,
+            Passthrough
         }
 
         //--- Class Methods ---
@@ -32,7 +32,8 @@ namespace SGMLTests {
             // determine how the document should be written back
             SgmlReaderTestCallback callback;
             switch(xmlRender) {
-            case XmlRender.Load:
+            case XmlRender.Doc:
+
                 // test writing sgml reader using xml document load
                 callback = (reader, writer) => {
                     var doc = new XmlDocument();
@@ -40,7 +41,7 @@ namespace SGMLTests {
                     doc.WriteTo(writer);
                 };
                 break;
-            case XmlRender.Clone:
+            case XmlRender.DocClone:
 
                 // test writing sgml reader using xml document load and clone
                 callback = (reader, writer) => {
@@ -50,7 +51,7 @@ namespace SGMLTests {
                     clone.WriteTo(writer);
                 };
                 break;
-            case XmlRender.Write:
+            case XmlRender.Passthrough:
 
                 // test writing sgml reader directly to xml writer
                 callback = (reader, writer) => {
@@ -70,6 +71,9 @@ namespace SGMLTests {
         private static void ReadTest(string name, out string before, out string after) {
             var assembly = typeof(UnitTests).Assembly;
             var stream = assembly.GetManifestResourceStream(assembly.FullName.Split(',')[0] + ".Resources." + name);
+            if(stream == null) {
+                throw new FileNotFoundException("unable to load requested resource: " + name);
+            }
             using(var sr = new StreamReader(stream)) {
                 var test = sr.ReadToEnd().Split('`');
                 before = test[0];
@@ -81,11 +85,11 @@ namespace SGMLTests {
 
             // initialize sgml reader
             var reader = new SgmlReader {
-                CaseFolding = caseFolding
+                CaseFolding = caseFolding,
+                DocType = doctype,
+                InputStream = new StringReader(source),
+                WhitespaceHandling = format ? WhitespaceHandling.None : WhitespaceHandling.All
             };
-            reader.DocType = doctype;
-            reader.InputStream = new StringReader(source);
-            reader.WhitespaceHandling = format ? WhitespaceHandling.None : WhitespaceHandling.All;
 
             // initialize xml writer
             var stringWriter = new StringWriter();

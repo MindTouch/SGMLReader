@@ -1,5 +1,4 @@
-﻿`-html
-<html>
+﻿<html>
 	<body>
 		<style>div.wiki { float: right; }</style>
 		<em>foo</em>
@@ -12,4 +11,3 @@
     <em>foo</em>
   </body>
 </html>
-`
