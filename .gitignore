@@ -16,7 +16,5 @@ App_Data/
 *.userprefs
 *.pidb
 *.resources
-src/test-results/*.xml
-src/*/test-results/*.xml
-src/*/*/test-results/*.xml
+SGMLTests/test-results/*.xml
 *.test-cache
