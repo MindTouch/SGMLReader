@@ -1,9 +1,7 @@
-﻿`-html -lower
-<html>
+﻿<html>
 <body>This <P>is bad </P> XHTML.</body>
 </html>
 `
 <html>
   <body>This <p>is bad </p> XHTML.</body>
 </html>
-`

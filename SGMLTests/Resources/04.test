@@ -1,5 +1,4 @@
-﻿`-html
-<html>
+﻿<html>
 <body>
 <tag>&test&nbsp&nbsp blah blah</tag>
 </body>
@@ -10,4 +9,3 @@
     <tag>&amp;test  blah blah</tag>
   </body>
 </html>
-`

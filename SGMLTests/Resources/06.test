@@ -1,5 +1,4 @@
-﻿`-html
-<html>
+﻿<html>
 <body>
 <P class=MsoNormal dir=ltr 
 style="MARGIN: 0pt;" align=left><?xml:namespace 
@@ -19,4 +18,3 @@ prefix = st1 ns = "urn:schemas-microsoft-com:office:smarttags"
     </P>
   </body>
 </html>
-`

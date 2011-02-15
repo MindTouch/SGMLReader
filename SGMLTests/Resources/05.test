@@ -1,5 +1,4 @@
-﻿`-html
-<html>
+﻿<html>
 <body>
 <p>bad char: <span>&#1048576;</span></p>
 </body>
@@ -10,4 +9,3 @@
     <p>bad char: <span>􀀀</span></p>
   </body>
 </html>
-`

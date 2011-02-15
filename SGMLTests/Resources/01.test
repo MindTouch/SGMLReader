@@ -1,5 +1,4 @@
-﻿`-html
-<html>
+﻿<html>
 <body><span text />
 </body>
 </html>
@@ -9,4 +8,3 @@
     <span text="text" />
   </body>
 </html>
-`

@@ -1,5 +1,4 @@
-﻿`-html
-<html>
+﻿<html>
 <body>
 <script type="text/javascript">/*<![CDATA[*/
 var test = '<div>"test"</div>';
@@ -16,4 +15,3 @@ var test = '<div>"test"</div>';
     <p>test</p>
   </body>
 </html>
-`

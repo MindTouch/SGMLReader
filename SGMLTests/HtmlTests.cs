@@ -4,27 +4,59 @@
  * 
  */
 
-using System;
-using System.IO;
-using System.Reflection;
 using NUnit.Framework;
+using Sgml;
 
 namespace SGMLTests {
 
-    [TestFixture]                    
-    public class UnitTests {
+    [TestFixture]
+    public partial class UnitTests {
+
+        //--- Methods ---
 
         [Test]
-        public void First() {
-            Assert.Fail();
+        public void Attribute_without_value_01() {
+            Test("01.test", XmlRender.Load, CaseFolding.None, "html", true);
         }
 
-        private string Read(string n) {
-            var assembly = typeof(UnitTests).Assembly;
-            var stream = assembly.GetManifestResourceStream(assembly.FullName.Split(',')[0] + "Resources." + n);
-            using(var sr = new StreamReader(stream)) {
-                return sr.ReadToEnd();
-            }
+        [Test]
+        public void Attribute_with_missing_closing_quote_before_gt_char_02() {
+            Test("02.test", XmlRender.Load, CaseFolding.None, "html", true);
+        }
+
+        [Test]
+        public void Attribute_with_missing_closing_quote_before_lt_char_03() {
+            Test("03.test", XmlRender.Load, CaseFolding.None, "html", true);
+        }
+
+        [Test]
+        public void Text_with_wrong_entities_or_entities_with_missing_trailing_semicolon_04() {
+            Test("04.test", XmlRender.Load, CaseFolding.None, "html", true);
+        }
+
+        [Test]
+        public void Text_with_32bit_numeric_entity_05() {
+            Test("05.test", XmlRender.Load, CaseFolding.None, "html", true);
+        }
+
+        [Test]
+        public void Text_from_ms_office_06() {
+            Test("06.test", XmlRender.Load, CaseFolding.None, "html", true);
+        }
+
+        [Test]
+        public void Attribute_with_nested_quotes_07() {
+            Test("07.test", XmlRender.Load, CaseFolding.None, "html", true);
+        }
+
+        [Test]
+        public void CData_section_with_xml_chars_08() {
+            Test("08.test", XmlRender.Load, CaseFolding.None, "html", true);
+        }
+
+        [Test]
+        public void Convert_markup_tolower_09() {
+            Test("09.test", XmlRender.Load, CaseFolding.ToLower, "html", true);
         }
     }
 }
