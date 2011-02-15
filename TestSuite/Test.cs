@@ -1,3 +1,9 @@
+/*
+ * 
+ * Copyright (c) 2007-2011 MindTouch. All rights reserved.
+ * 
+ */
+
 using System;
 using System.Xml;
 using System.Collections;

@@ -1,15 +1,15 @@
 /*
-* 
-* An XmlReader implementation for loading SGML (including HTML) converting it
-* to well formed XML, by adding missing quotes, empty attribute values, ignoring
-* duplicate attributes, case folding on tag names, adding missing closing tags
-* based on SGML DTD information, and so on.
-*
-* Copyright (c) 2002 Microsoft Corporation. All rights reserved. (Chris Lovett)
-* 
-* Copyright (c) 2007-2008 MindTouch. All rights reserved.
-* 
-*/
+ * 
+ * An XmlReader implementation for loading SGML (including HTML) converting it
+ * to well formed XML, by adding missing quotes, empty attribute values, ignoring
+ * duplicate attributes, case folding on tag names, adding missing closing tags
+ * based on SGML DTD information, and so on.
+ *
+ * Copyright (c) 2002 Microsoft Corporation. All rights reserved. (Chris Lovett)
+ * 
+ * Copyright (c) 2007-2011 MindTouch. All rights reserved.
+ * 
+ */
 
 using System;
 using System.Collections.Generic;
