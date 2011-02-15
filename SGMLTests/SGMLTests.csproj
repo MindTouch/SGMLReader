@@ -163,7 +163,7 @@
     <EmbeddedResource Include="Resources\48.test">
       <SubType>Code</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\49..test">
+    <EmbeddedResource Include="Resources\49.test">
       <SubType>Code</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\50.test">
