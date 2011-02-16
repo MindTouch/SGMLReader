@@ -17,4 +17,5 @@ App_Data/
 *.pidb
 *.resources
 SGMLTests/test-results/*.xml
+test-results/*.xml
 *.test-cache
