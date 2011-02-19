@@ -11,11 +11,12 @@ using log4net;
 using NUnit.Framework;
 using Sgml;
 
-namespace Sgml {
+namespace SGMLTests {
     public partial class Tests {
 
         //--- Types ---
-        private delegate void SgmlReaderTestCallback(SgmlReader reader, XmlWriter xmlWriter);
+        private delegate void XmlReaderTestCallback(XmlReader reader, XmlWriter xmlWriter);
+
         private enum XmlRender {
             Doc,
             DocClone,
@@ -24,6 +25,7 @@ namespace Sgml {
 
         //--- Class Fields ---
         private static ILog _log = LogManager.GetLogger(typeof(Tests));
+        private static bool _debug = true;
 
         //--- Class Methods ---
         private static void Test(string name, XmlRender xmlRender, CaseFolding caseFolding, string doctype, bool format) {
@@ -34,7 +36,7 @@ namespace Sgml {
             string actual;
 
             // determine how the document should be written back
-            SgmlReaderTestCallback callback;
+            XmlReaderTestCallback callback;
             switch(xmlRender) {
             case XmlRender.Doc:
 
@@ -85,15 +87,20 @@ namespace Sgml {
             }
         }
 
-        private static string RunTest(CaseFolding caseFolding, string doctype, bool format, string source, SgmlReaderTestCallback callback) {
+        private static string RunTest(CaseFolding caseFolding, string doctype, bool format, string source, XmlReaderTestCallback callback) {
 
             // initialize sgml reader
-            var reader = new SgmlReader {
+            XmlReader reader = new SgmlReader {
                 CaseFolding = caseFolding,
                 DocType = doctype,
                 InputStream = new StringReader(source),
                 WhitespaceHandling = format ? WhitespaceHandling.None : WhitespaceHandling.All
             };
+
+            // check if we need to use the LoggingXmlReader
+            if(_debug) {
+                reader = new LoggingXmlReader(reader, Console.Out);
+            }
 
             // initialize xml writer
             var stringWriter = new StringWriter();

@@ -11,7 +11,7 @@ using System.Xml;
 using NUnit.Framework;
 using Sgml;
 
-namespace Sgml {
+namespace SGMLTests {
 
     [TestFixture]
     public partial class Tests {
