@@ -288,6 +288,11 @@ namespace SGMLTests {
         }
 
         [Test]
+        public void Read_simple_html_54() {
+            Test("54.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
         public void Test_MoveToNextAttribute() {
 
             // Make sure we can do MoveToElement after reading multiple attributes.
