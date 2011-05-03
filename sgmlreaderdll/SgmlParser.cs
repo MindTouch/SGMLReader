@@ -738,6 +738,8 @@ namespace Sgml {
             int v = 0;
             if (ch == 'x')
             {
+                bool sawHexDigit = false;
+
                 ch = ReadChar();
                 for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
                 {
@@ -745,14 +747,17 @@ namespace Sgml {
                     if (ch >= '0' && ch <= '9')
                     {
                         p = (int)(ch - '0');
+                        sawHexDigit = true;
                     } 
                     else if (ch >= 'a' && ch <= 'f')
                     {
                         p = (int)(ch-'a')+10;
+                        sawHexDigit = true;
                     } 
                     else if (ch >= 'A' && ch <= 'F')
                     {
                         p = (int)(ch-'A')+10;
+                        sawHexDigit = true;
                     }
                     else
                     {
@@ -762,20 +767,33 @@ namespace Sgml {
 
                     v = (v * 16) + p;
                 }
+
+                if (!sawHexDigit)
+                {
+                    return "&#x";
+                }
             } 
             else
             {
+                bool sawDigit = false;
+
                 for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
                 {
                     if (ch >= '0' && ch <= '9')
                     {
                         v = (v * 10) + (int)(ch - '0');
+                        sawDigit = true;
                     } 
                     else
                     {
                         break; // we must be done!
                         //Error("Decimal digit out of range '{0}'", (int)ch);
                     }
+                }
+
+                if (!sawDigit)
+                {
+                    return "&#";
                 }
             }
 

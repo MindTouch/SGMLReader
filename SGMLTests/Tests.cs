@@ -293,6 +293,30 @@ namespace SGMLTests {
         }
 
         [Test]
+        public void Read_html_with_invalid_entity_reference_55()
+        {
+            Test("55.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Read_html_with_invalid_entity_reference_56()
+        {
+            Test("56.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Read_html_with_invalid_entity_reference_57()
+        {
+            Test("57.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Read_html_with_invalid_entity_reference_58()
+        {
+            Test("58.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
         public void Test_MoveToNextAttribute() {
 
             // Make sure we can do MoveToElement after reading multiple attributes.
