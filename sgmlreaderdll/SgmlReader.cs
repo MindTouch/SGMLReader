@@ -2285,6 +2285,31 @@ namespace Sgml
                     ch = this.m_current.ReadChar();
                 }
                 string name = this.m_name.ToString();
+
+                // TODO (steveb): don't lookup amp, gt, lt, quote
+                switch(name) {
+                case "amp":
+                    sb.Append("&");
+                    if(ch != terminator && ch != '&' && ch != Entity.EOF)
+                        ch = this.m_current.ReadChar();
+                    return;
+                case "lt":
+                    sb.Append("<");
+                    if(ch != terminator && ch != '&' && ch != Entity.EOF)
+                        ch = this.m_current.ReadChar();
+                    return;
+                case "gt":
+                    sb.Append(">");
+                    if(ch != terminator && ch != '&' && ch != Entity.EOF)
+                        ch = this.m_current.ReadChar();
+                    return;
+                case "quot":
+                    sb.Append("\"");
+                    if(ch != terminator && ch != '&' && ch != Entity.EOF)
+                        ch = this.m_current.ReadChar();
+                    return;
+                }
+
                 if (this.m_dtd != null && !string.IsNullOrEmpty(name))
                 {
                     Entity e = (Entity)this.m_dtd.FindEntity(name);

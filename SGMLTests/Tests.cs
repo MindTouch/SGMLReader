@@ -293,6 +293,11 @@ namespace SGMLTests {
         }
 
         [Test]
+        public void Decode_xml_entity_55() {
+            Test("55.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
         public void Test_MoveToNextAttribute() {
 
             // Make sure we can do MoveToElement after reading multiple attributes.
