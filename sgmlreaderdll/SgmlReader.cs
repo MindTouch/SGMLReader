@@ -2308,6 +2308,11 @@ namespace Sgml
                     if(ch != terminator && ch != '&' && ch != Entity.EOF)
                         ch = this.m_current.ReadChar();
                     return;
+                case "apos":
+                    sb.Append("'");
+                    if(ch != terminator && ch != '&' && ch != Entity.EOF)
+                        ch = this.m_current.ReadChar();
+                    return;
                 }
 
                 if (this.m_dtd != null && !string.IsNullOrEmpty(name))
