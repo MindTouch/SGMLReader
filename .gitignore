@@ -19,3 +19,4 @@ App_Data/
 SGMLTests/test-results/*.xml
 test-results/*.xml
 *.test-cache
+build/
