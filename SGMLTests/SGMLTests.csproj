@@ -89,10 +89,11 @@
     <None Include="ofx160.dtd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="Resources\ms55.test" />
+    <EmbeddedResource Include="Resources\ms56.test" />
+    <EmbeddedResource Include="Resources\ms57.test" />
+    <EmbeddedResource Include="Resources\ms58.test" />
     <EmbeddedResource Include="Resources\55.test" />
-    <EmbeddedResource Include="Resources\56.test" />
-    <EmbeddedResource Include="Resources\57.test" />
-    <EmbeddedResource Include="Resources\58.test" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

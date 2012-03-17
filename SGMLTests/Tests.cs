@@ -1,6 +1,20 @@
 /*
  * 
  * Copyright (c) 2007-2011 MindTouch. All rights reserved.
+ * www.mindtouch.com  oss@mindtouch.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
 
@@ -293,27 +307,32 @@ namespace SGMLTests {
         }
 
         [Test]
-        public void Read_html_with_invalid_entity_reference_55()
-        {
+        public void Decode_xml_entity_55() {
             Test("55.test", XmlRender.Passthrough, CaseFolding.None, null, true);
         }
 
         [Test]
-        public void Read_html_with_invalid_entity_reference_56()
+        public void Read_html_with_invalid_entity_reference_55()
         {
-            Test("56.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+            Test("ms55.test", XmlRender.Passthrough, CaseFolding.None, null, true);
         }
 
         [Test]
-        public void Read_html_with_invalid_entity_reference_57()
+        public void Read_html_with_invalid_entity_reference_ms56()
         {
-            Test("57.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+            Test("ms56.test", XmlRender.Passthrough, CaseFolding.None, null, true);
         }
 
         [Test]
-        public void Read_html_with_invalid_entity_reference_58()
+        public void Read_html_with_invalid_entity_reference_ms57()
         {
-            Test("58.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+            Test("ms57.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Read_html_with_invalid_entity_reference_ms58()
+        {
+            Test("ms58.test", XmlRender.Passthrough, CaseFolding.None, null, true);
         }
 
         [Test]
