@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SgmlReader</id>
+    <version>1.8.8</version>
+    <authors>Chris Lovett, Steve Bjorg</authors>
+    <owners>Andy Sherwood</owners>
+    <licenseUrl>https://github.com/MindTouch/SGMLReader/blob/master/license.txt</licenseUrl>
+    <projectUrl>https://github.com/MindTouch/SGMLReader</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Converts SGML to XML via XmlReader API</summary>
+    <description>SGMLReader is a versatile C# .NET library written by Chris Lovett for parsing HTML/SGML files. The original community around SGMLReader used to be hosted by GotDotNet, but this site was phased out (update: it appears the code has re-surfaced on MSDN Code Gallery, but without any updates). MindTouch Dream and MindTouch Core use the SGMLReader library extensively. Over the last few years we have made many improvements to this code; thereby, making us the de facto maintainers of this library. In the spirit of the original author, we're providing back these changes on the MindTouch Developer Center site.</description>
+    <tags>SGML XML</tags>
+    <copyright>Copyright © 2002, Microsoft Corporation; Copyright © 2007-2008, MindTouch</copyright>
+  </metadata>
+</package>
