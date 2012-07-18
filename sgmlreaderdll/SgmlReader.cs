@@ -1161,8 +1161,9 @@ namespace Sgml
         {
             get
             {
-                if (this.m_state == State.Attr || this.m_state == State.AttrValue) 
-                    return 0;
+                if (this.m_state == State.Attr || this.m_state == State.AttrValue)
+                    //For compatibility with mono
+                    return this.m_node.AttributeCount;
                 else if (this.m_node.NodeType == XmlNodeType.Element || this.m_node.NodeType == XmlNodeType.DocumentType)
                     return this.m_node.AttributeCount;
                 else
@@ -1294,8 +1295,9 @@ namespace Sgml
             if (a != null)
             {
                 this.m_apos = i;
-                this.m_a = a;
-                if (this.m_state != State.Attr)
+                this.m_a = a; 
+                //Make sure that AttrValue does not overwrite the preserved value
+                if (this.m_state != State.Attr && this.m_state != State.AttrValue)
                 {
                     this.m_node.CurrentState = this.m_state; //save current state.
                 }
