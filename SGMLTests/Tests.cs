@@ -312,6 +312,12 @@ namespace SGMLTests {
         }
 
         [Test]
+        public void Decode_Surrogate_Pairs()
+        {
+            Test("56.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
         public void Test_MoveToNextAttribute() {
 
             // Make sure we can do MoveToElement after reading multiple attributes.
