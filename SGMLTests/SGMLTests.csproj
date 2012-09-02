@@ -72,6 +72,7 @@
     </None>
     <EmbeddedResource Include="Resources\55.test" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\56.test" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
