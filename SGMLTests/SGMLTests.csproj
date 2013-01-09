@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9CC3FC29-375F-44F1-95BE-D52246CC7B3E}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>SGMLTests</RootNamespace>
-    <AssemblyName>SGMLTests</AssemblyName>
+    <RootNamespace>SgmlTests</RootNamespace>
+    <AssemblyName>SgmlTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
