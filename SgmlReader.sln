@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SgmlReader", "CommandLine\SgmlReader.csproj", "{606C348A-9A72-4179-9C55-4DD9914C22CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SgmlReader", "SgmlReader\SgmlReader.csproj", "{606C348A-9A72-4179-9C55-4DD9914C22CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SgmlReaderDll", "sgmlreaderdll\SgmlReaderDll.csproj", "{499527FF-AE52-450F-B3E3-4AD53E1712AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SgmlReaderDll", "SgmlReaderDll\SgmlReaderDll.csproj", "{499527FF-AE52-450F-B3E3-4AD53E1712AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGMLTests", "SGMLTests\SGMLTests.csproj", "{9CC3FC29-375F-44F1-95BE-D52246CC7B3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SgmlTests", "SgmlTests\SgmlTests.csproj", "{9CC3FC29-375F-44F1-95BE-D52246CC7B3E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0869BE5-15C0-4F2D-A94A-5534163302A1}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		SGMLReader.nuspec = SGMLReader.nuspec
 		license.txt = license.txt
 		ReadMe.md = ReadMe.md
-		Readme.htm = Readme.htm
+		Demo.aspx = Demo.aspx
 	EndProjectSection
 EndProject
 Global
@@ -44,7 +44,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = CommandLine\SgmlReader.csproj
+		StartupItem = SgmlReader\SgmlReader.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
