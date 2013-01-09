@@ -756,7 +756,6 @@ namespace Sgml {
             if (this.m_isHtml && v >= 0x80 & v <= 0x9F)
             {
                 // This range of control characters is mapped to Windows-1252!
-                int size = CtrlMap.Length;
                 int i = v - 0x80;
                 int unicode = CtrlMap[i];
                 return Convert.ToChar(unicode).ToString();
