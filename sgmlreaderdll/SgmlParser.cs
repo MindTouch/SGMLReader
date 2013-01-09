@@ -750,8 +750,52 @@ namespace Sgml {
         /// <returns>The string for the character entity.</returns>
         public string ExpandCharEntity()
         {
-            char ch = ReadChar();
+            int v = ReadNumericEntityCode();
+
+            // HACK ALERT: IE and Netscape map the unicode characters 
+            if (this.m_isHtml && v >= 0x80 & v <= 0x9F)
+            {
+                // This range of control characters is mapped to Windows-1252!
+                int size = CtrlMap.Length;
+                int i = v - 0x80;
+                int unicode = CtrlMap[i];
+                return Convert.ToChar(unicode).ToString();
+            }
+
+            if (0xD800 <= v && v <= 0xDBFF)
+            {
+                // high surrogate
+                if (m_lastchar == '&')
+                {
+                    char ch = ReadChar();
+                    if (ch == '#')
+                    {
+                        int v2 = ReadNumericEntityCode();
+                        if (0xDC00 <= v2 && v2 <= 0xDFFF)
+                        {
+                            // low surrogate
+                            v = char.ConvertToUtf32((char)v, (char)v2);
+                        }
+                    }
+                    else
+                    {
+                        Error("Premature {0} parsing surrogate pair", ch);
+                    }
+                }
+                else
+                {
+                    Error("Premature {0} parsing surrogate pair", m_lastchar);
+                }
+            }
+
+            // NOTE (steveb): we need to use ConvertFromUtf32 to allow for extended numeric encodings
+            return char.ConvertFromUtf32(v);
+        }
+
+        private int ReadNumericEntityCode()
+        {
             int v = 0;
+            char ch = ReadChar();
             if (ch == 'x')
             {
                 ch = ReadChar();
@@ -761,32 +805,32 @@ namespace Sgml {
                     if (ch >= '0' && ch <= '9')
                     {
                         p = (int)(ch - '0');
-                    } 
+                    }
                     else if (ch >= 'a' && ch <= 'f')
                     {
-                        p = (int)(ch-'a')+10;
-                    } 
+                        p = (int)(ch - 'a') + 10;
+                    }
                     else if (ch >= 'A' && ch <= 'F')
                     {
-                        p = (int)(ch-'A')+10;
+                        p = (int)(ch - 'A') + 10;
                     }
                     else
                     {
-                        break;//we must be done!
+                        break; //we must be done!
                         //Error("Hex digit out of range '{0}'", (int)ch);
                     }
 
-                    v = (v * 16) + p;
+                    v = (v*16) + p;
                 }
-            } 
+            }
             else
             {
                 for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
                 {
                     if (ch >= '0' && ch <= '9')
                     {
-                        v = (v * 10) + (int)(ch - '0');
-                    } 
+                        v = (v*10) + (int)(ch - '0');
+                    }
                     else
                     {
                         break; // we must be done!
@@ -801,20 +845,9 @@ namespace Sgml {
             }
             else if (ch == ';')
             {
-                ReadChar(); 
+                ReadChar();
             }
-
-            // HACK ALERT: IE and Netscape map the unicode characters 
-            if (this.m_isHtml && v >= 0x80 & v <= 0x9F)
-            {
-                // This range of control characters is mapped to Windows-1252!
-                int i = v - 0x80;
-                int unicode = CtrlMap[i];
-                return Convert.ToChar(unicode).ToString();
-            }
-
-            // NOTE (steveb): we need to use ConvertFromUtf32 to allow for extended numeric encodings
-            return char.ConvertFromUtf32(v);
+            return v;
         }
 
         static int[] CtrlMap = new int[] {
