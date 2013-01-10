@@ -121,8 +121,6 @@ If you have questions, please post them on
 them with *sgmlreader*.  You may also email bugs, feedback and/or feature 
 requests to <a href="mailto:clovett@microsoft.com">Chris Lovett</a>.
 
-Please email bugs, feedback and/or feature requests to Chris Lovett.
-
 If you fix an issue, please submit follow these guidelines:
 
 1. Make sure the code formatting is **identical** to the existing code formatting. 
