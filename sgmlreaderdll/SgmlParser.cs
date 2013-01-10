@@ -750,58 +750,11 @@ namespace Sgml {
         /// <returns>The string for the character entity.</returns>
         public string ExpandCharEntity()
         {
-            char ch = ReadChar();
-            int v = 0;
-            if (ch == 'x')
+            string value;
+            int v = ReadNumericEntityCode(out value);
+            if(v == -1)
             {
-                ch = ReadChar();
-                for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
-                {
-                    int p = 0;
-                    if (ch >= '0' && ch <= '9')
-                    {
-                        p = (int)(ch - '0');
-                    } 
-                    else if (ch >= 'a' && ch <= 'f')
-                    {
-                        p = (int)(ch-'a')+10;
-                    } 
-                    else if (ch >= 'A' && ch <= 'F')
-                    {
-                        p = (int)(ch-'A')+10;
-                    }
-                    else
-                    {
-                        break;//we must be done!
-                        //Error("Hex digit out of range '{0}'", (int)ch);
-                    }
-
-                    v = (v * 16) + p;
-                }
-            } 
-            else
-            {
-                for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
-                {
-                    if (ch >= '0' && ch <= '9')
-                    {
-                        v = (v * 10) + (int)(ch - '0');
-                    } 
-                    else
-                    {
-                        break; // we must be done!
-                        //Error("Decimal digit out of range '{0}'", (int)ch);
-                    }
-                }
-            }
-
-            if (ch == 0)
-            {
-                Error("Premature {0} parsing entity reference", ch);
-            }
-            else if (ch == ';')
-            {
-                ReadChar(); 
+                return value;
             }
 
             // HACK ALERT: IE and Netscape map the unicode characters 
@@ -813,8 +766,113 @@ namespace Sgml {
                 return Convert.ToChar(unicode).ToString();
             }
 
+            if (0xD800 <= v && v <= 0xDBFF)
+            {
+                // high surrogate
+                if (m_lastchar == '&')
+                {
+                    char ch = ReadChar();
+                    if (ch == '#')
+                    {
+                        string value2;
+                        int v2 = ReadNumericEntityCode(out value2);
+                        if(v2 == -1)
+                        {
+                            return value + ";" + value2;
+                        }
+                        if (0xDC00 <= v2 && v2 <= 0xDFFF)
+                        {
+                            // low surrogate
+                            v = char.ConvertToUtf32((char)v, (char)v2);
+                        }
+                    }
+                    else
+                    {
+                        Error("Premature {0} parsing surrogate pair", ch);
+                    }
+                }
+                else
+                {
+                    Error("Premature {0} parsing surrogate pair", m_lastchar);
+                }
+            }
+
             // NOTE (steveb): we need to use ConvertFromUtf32 to allow for extended numeric encodings
             return char.ConvertFromUtf32(v);
+        }
+
+        private int ReadNumericEntityCode(out string value)
+        {
+            int v = 0;
+            char ch = ReadChar();
+            value = "&#";
+            if (ch == 'x')
+            {
+                bool sawHexDigit = false;
+                value += "x";
+                ch = ReadChar();
+                for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
+                {
+                    int p = 0;
+                    if (ch >= '0' && ch <= '9')
+                    {
+                        p = (int)(ch - '0');
+                        sawHexDigit = true;
+                    } 
+                    else if (ch >= 'a' && ch <= 'f')
+                    {
+                        p = (int)(ch - 'a') + 10;
+                        sawHexDigit = true;
+                    } 
+                    else if (ch >= 'A' && ch <= 'F')
+                    {
+                        p = (int)(ch - 'A') + 10;
+                        sawHexDigit = true;
+                    }
+                    else
+                    {
+                        break; //we must be done!
+                        //Error("Hex digit out of range '{0}'", (int)ch);
+                    }
+                    value += ch;
+                    v = (v*16) + p;
+                }
+                if (!sawHexDigit)
+                {
+                    return -1;
+                }
+            } 
+            else
+            {
+                bool sawDigit = false;
+                for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
+                {
+                    if (ch >= '0' && ch <= '9')
+                    {
+                        v = (v*10) + (int)(ch - '0');
+                        sawDigit = true;
+                    } 
+                    else
+                    {
+                        break; // we must be done!
+                        //Error("Decimal digit out of range '{0}'", (int)ch);
+                    }
+                    value += ch;
+                }
+                if (!sawDigit)
+                {
+                    return -1;
+                }
+            }
+            if (ch == 0)
+            {
+                Error("Premature {0} parsing entity reference", ch);
+            }
+            else if (ch == ';')
+            {
+                ReadChar();
+            }
+            return v;
         }
 
         static int[] CtrlMap = new int[] {
