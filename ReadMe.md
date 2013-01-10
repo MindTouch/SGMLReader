@@ -45,7 +45,7 @@ optional. Then you can read from this reader like any other XmlReader class.
 
 * **SgmlDtd Dtd**<br/>
 Specify the SgmlDtd object directly. This allows you to cache the Dtd and share 
-it across multipl SgmlReaders. To load a DTD from a URL use the SystemLiteral 
+it across multiple SgmlReaders. To load a DTD from a URL use the SystemLiteral 
 property.
 * **string DocType**<br/>
 The name of root element specified in the DOCTYPE tag. If you specify "HTML" 
@@ -210,7 +210,7 @@ while.
 
 ### Release notes for 1.7.5 (2008-Jul-01)
 
-* Missing quote in attribute value causes catastropic failure.
+* Missing quote in attribute value causes catastrophic failure.
 * Unknown prefixes cannot be mapped to the same namespace.
 
 ### Release notes for 1.7.4 (2008-Jun-03)
@@ -251,7 +251,7 @@ comparisons when reusing the DTD.
 * Fix bug reported by sanchen - ExpandCharEntity was messed up on hex entities.
 * Fix bug reported by kojiishi - off by one bug in SniffName().
 * Fix bug reported by kojiishi - bug in loading XmlDocument from SgmlReader -
- this was caused by the HTML documernt containing an embedded &lt;?xml version='1.0'?> 
+ this was caused by the HTML document containing an embedded &lt;?xml version='1.0'?> 
  declaration, so the SgmlReader now strips these.
 * Added special stripping of punctuation characters between attributes like ",".
 
@@ -288,7 +288,7 @@ on input
 * Added proper encoding support, including support for HTML &lt;META 
 http-equiv="content-type".  This means output now has the correct XML declaration 
 (unless you specify the new -noxml option) and any existing xml declarations in 
-the input are stipped out so you don't end up with two.
+the input are stripped out so you don't end up with two.
 * Added support for ASP &lt;%...%> blocks (thanks to Dan Whalin).
 * Now strips out DOCTYPE by default since HTML DocTypes can cause problems for 
 XmlDocument when it tries to load the HTML DTD.  but added "-doctype" switch for 
