@@ -136,11 +136,17 @@ existing code.
 *Note:* all 1.8.x releases up to 1.8.7 are compatible with 1.8.0.  Use assembly 
 redirection to account for newer versions when recompilation is not an option.
 
+### Release notes for 1.8.10 (2013-Jan-10)
+
+* Fixed AttributeCount and m_state problems for use under Mono. (Max Zhao)
+* Decode unicode surrogate pairs. (CaptainCodeman)
+* Incomplete entity codes are kept intact and escaped to produce valid HTML. (Marek St&oacute;j)
+
 ### Release notes for 1.8.9 (2013-Jan-09)
 
-* Converted license from GPL 3 to Apache 2.0
-* Consolidated read-me files
-* Cleaned up solution and project files
+* Converted license from GPL 3 to Apache 2.0.
+* Consolidated read-me files.
+* Cleaned up solution and project files.
 
 ### Release notes for 1.8.8 (2011-Sep-29)
 
