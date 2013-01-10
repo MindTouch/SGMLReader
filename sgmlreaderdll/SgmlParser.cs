@@ -750,7 +750,12 @@ namespace Sgml {
         /// <returns>The string for the character entity.</returns>
         public string ExpandCharEntity()
         {
-            int v = ReadNumericEntityCode();
+            string value;
+            int v = ReadNumericEntityCode(out value);
+            if(v == -1)
+            {
+                return value;
+            }
 
             // HACK ALERT: IE and Netscape map the unicode characters 
             if (this.m_isHtml && v >= 0x80 & v <= 0x9F)
@@ -769,7 +774,12 @@ namespace Sgml {
                     char ch = ReadChar();
                     if (ch == '#')
                     {
-                        int v2 = ReadNumericEntityCode();
+                        string value2;
+                        int v2 = ReadNumericEntityCode(out value2);
+                        if(v2 == -1)
+                        {
+                            return value + ";" + value2;
+                        }
                         if (0xDC00 <= v2 && v2 <= 0xDFFF)
                         {
                             // low surrogate
@@ -791,12 +801,15 @@ namespace Sgml {
             return char.ConvertFromUtf32(v);
         }
 
-        private int ReadNumericEntityCode()
+        private int ReadNumericEntityCode(out string value)
         {
             int v = 0;
             char ch = ReadChar();
+            value = "&#";
             if (ch == 'x')
             {
+                bool sawHexDigit = false;
+                value += "x";
                 ch = ReadChar();
                 for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
                 {
@@ -804,40 +817,53 @@ namespace Sgml {
                     if (ch >= '0' && ch <= '9')
                     {
                         p = (int)(ch - '0');
-                    }
+                        sawHexDigit = true;
+                    } 
                     else if (ch >= 'a' && ch <= 'f')
                     {
                         p = (int)(ch - 'a') + 10;
-                    }
+                        sawHexDigit = true;
+                    } 
                     else if (ch >= 'A' && ch <= 'F')
                     {
                         p = (int)(ch - 'A') + 10;
+                        sawHexDigit = true;
                     }
                     else
                     {
                         break; //we must be done!
                         //Error("Hex digit out of range '{0}'", (int)ch);
                     }
-
+                    value += ch;
                     v = (v*16) + p;
                 }
-            }
+                if (!sawHexDigit)
+                {
+                    return -1;
+                }
+            } 
             else
             {
+                bool sawDigit = false;
                 for (; ch != Entity.EOF && ch != ';'; ch = ReadChar())
                 {
                     if (ch >= '0' && ch <= '9')
                     {
                         v = (v*10) + (int)(ch - '0');
-                    }
+                        sawDigit = true;
+                    } 
                     else
                     {
                         break; // we must be done!
                         //Error("Decimal digit out of range '{0}'", (int)ch);
                     }
+                    value += ch;
+                }
+                if (!sawDigit)
+                {
+                    return -1;
                 }
             }
-
             if (ch == 0)
             {
                 Error("Premature {0} parsing entity reference", ch);

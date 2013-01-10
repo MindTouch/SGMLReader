@@ -319,8 +319,38 @@ namespace SGMLTests {
             Test("56.test", XmlRender.Passthrough, CaseFolding.None, null, true);
         }
 
+        public void Read_html_with_invalid_entity_reference_57()
+        {
+            Test("57.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
         [Test]
-        public void Test_MoveToNextAttribute() {
+        public void Read_html_with_invalid_entity_reference_58()
+        {
+            Test("58.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Read_html_with_invalid_entity_reference_59()
+        {
+            Test("59.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Read_html_with_invalid_entity_reference_60()
+        {
+            Test("60.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Read_html_with_invalid_surrogate_pairs_61()
+        {
+            Test("61.test", XmlRender.Passthrough, CaseFolding.None, null, true);
+        }
+
+        [Test]
+        public void Test_MoveToNextAttribute()
+        {
 
             // Make sure we can do MoveToElement after reading multiple attributes.
             var r = new SgmlReader {
@@ -336,7 +366,8 @@ namespace SGMLTests {
         }
 
         [Test]
-        public void Test_for_illegal_char_value() {
+        public void Test_for_illegal_char_value() 
+        {
             const string source = "&test";
             var reader = new SgmlReader {
                 DocType = "HTML",
