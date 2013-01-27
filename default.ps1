@@ -14,7 +14,7 @@ task Init -depends Clean {
 
 task Compile -depends Init { 
     $sources = gci ".\sgmlreaderdll" -r -fi *.cs |% { $_.FullName }
-    csc /target:library /out:$out $sources /keyfile:.\sgmlreaderdll\sgmlreader.snk
+    csc /target:library /out:$out $sources /keyfile:.\sgmlreaderdll\sgmlreader.snk /resource:.\SgmlReader\Html.dtd
 }
 
 task Test -depends Compile {
