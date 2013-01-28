@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SgmlReader</id>
-    <version>1.8.10</version>
+    <version>1.8.11</version>
     <authors>Chris Lovett, Steve Bjorg</authors>
     <owners>Steve Bjorg, Andy Sherwood</owners>
     <licenseUrl>https://github.com/MindTouch/SGMLReader/blob/master/license.txt</licenseUrl>
