@@ -439,7 +439,7 @@ namespace Sgml
         {
             if (this.m_dtd == null && !this.m_ignoreDtd)
             {
-                if (string.IsNullOrEmpty(this.m_syslit))
+                if (string.IsNullOrEmpty(this.m_syslit) || this.m_syslit == "http://www.w3.org/TR/html4/loose.dtd")
                 {
                     if (this.m_docType != null && StringUtilities.EqualsIgnoreCase(this.m_docType, "html"))
                     {
