@@ -21,22 +21,23 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Xml;
 
 namespace Sgml {
     /// <summary>
     /// Thrown if any errors occur while parsing the source.
     /// </summary>
+#if !PORTABLE
     [Serializable]
+#endif
     public class SgmlParseException : Exception
     {
         private string m_entityContext;
@@ -79,17 +80,34 @@ namespace Sgml {
         {
         }
 
+#if !PORTABLE
         /// <summary>
         /// Initializes a new instance of the SgmlParseException class with serialized data. 
         /// </summary>
         /// <param name="streamInfo">The object that holds the serialized object data.</param>
         /// <param name="streamCtx">The contextual information about the source or destination.</param>
-        protected SgmlParseException(SerializationInfo streamInfo, StreamingContext streamCtx)
+        protected SgmlParseException(System.Runtime.Serialization.SerializationInfo streamInfo, System.Runtime.Serialization.StreamingContext streamCtx)
             : base(streamInfo, streamCtx)
         {
             if (streamInfo != null)
                 m_entityContext = streamInfo.GetString("entityContext");
         }
+
+        /// <summary>
+        /// Populates a SerializationInfo with the data needed to serialize the exception.
+        /// </summary>
+        /// <param name="info">The <see cref="System.Runtime.Serialization.SerializationInfo"/> to populate with data. </param>
+        /// <param name="context">The destination (see <see cref="System.Runtime.Serialization.StreamingContext"/>) for this serialization.</param>
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        {
+            if (info == null)
+                throw new ArgumentNullException("info");
+
+            info.AddValue("entityContext", m_entityContext);
+            base.GetObjectData(info, context);
+        }
+#endif
 
         /// <summary>
         /// Contextual information detailing the entity on which the error occurred.
@@ -102,20 +120,6 @@ namespace Sgml {
             }
         }
 
-        /// <summary>
-        /// Populates a SerializationInfo with the data needed to serialize the exception.
-        /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> to populate with data. </param>
-        /// <param name="context">The destination (see <see cref="StreamingContext"/>) for this serialization.</param>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter=true)]
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-                throw new ArgumentNullException("info");
-
-            info.AddValue("entityContext", m_entityContext);
-            base.GetObjectData(info, context);
-        }
     }
 
     /// <summary>
@@ -460,18 +464,27 @@ namespace Sgml {
                 }
 
                 Stream stream = null;
+#if PORTABLE
+                Encoding e = Encoding.UTF8;
+#else
                 Encoding e = Encoding.Default;
+#endif
                 switch (this.m_resolvedUri.Scheme)
                 {
                     case "file":
                         {
+#if PORTABLE
+                            throw new NotSupportedException("The file scheme is not supported by the .NETPortable framework.");
+#else
                             string path = this.m_resolvedUri.LocalPath;
                             stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+#endif
                         }
                         break;
                     default:
                         //Console.WriteLine("Fetching:" + ResolvedUri.AbsoluteUri);
                         HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(ResolvedUri);
+#if !PORTABLE
                         wr.UserAgent = "Mozilla/4.0 (compatible;);";
                         wr.Timeout = 10000; // in case this is running in an ASPX page.
                         if (m_proxy != null)
@@ -479,8 +492,8 @@ namespace Sgml {
                         wr.PreAuthenticate = false; 
                         // Pass the credentials of the process. 
                         wr.Credentials = CredentialCache.DefaultCredentials; 
-
-                        WebResponse resp = wr.GetResponse();
+#endif
+                        WebResponse resp = GetResponse(wr, TimeSpan.FromSeconds(10));
                         Uri actual = resp.ResponseUri;
                         if (!string.Equals(actual.AbsoluteUri, this.m_resolvedUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
                         {
@@ -500,7 +513,12 @@ namespace Sgml {
                         }
 
                         i = contentType.IndexOf("charset");
+#if PORTABLE
+                        e = Encoding.UTF8;
+#else
                         e = Encoding.Default;
+#endif
+
                         if (i >= 0)
                         {                                
                             int j = contentType.IndexOf("=", i);
@@ -533,6 +551,41 @@ namespace Sgml {
             }
         }
 
+        private static HttpWebResponse GetResponse(HttpWebRequest wr, TimeSpan timeout)
+        {
+            HttpWebResponse response = null;
+            Exception exception = null;
+            var signal = new ManualResetEvent(false);
+
+            wr.BeginGetResponse(ar =>
+                {
+                    try
+                    {
+                        response = (HttpWebResponse) wr.EndGetResponse(ar);
+                    }
+                    catch (Exception ex)
+                    {
+                        exception = ex;
+                    }
+                    finally
+                    {
+                        signal.Set();
+                    }
+                }, null);
+
+            if (!signal.WaitOne(timeout))
+            {
+                throw new TimeoutException("Timeout waiting for response");
+            }
+
+            if (exception != null)
+            {
+                throw new IOException(exception.Message, exception);
+            }
+
+            return response;
+        }
+
         /// <summary>
         /// Gets the character encoding for this entity.
         /// </summary>
@@ -550,7 +603,7 @@ namespace Sgml {
         public void Close()
         {
             if (this.m_weOwnTheStream) 
-                this.m_stm.Close();
+                this.m_stm.Dispose();
         }
 
         /// <summary>
@@ -782,8 +835,9 @@ namespace Sgml {
                         }
                         if (0xDC00 <= v2 && v2 <= 0xDFFF)
                         {
+							
                             // low surrogate
-                            v = char.ConvertToUtf32((char)v, (char)v2);
+                            v = UTF32Utilities.ConvertToUtf32((char)v, (char)v2);
                         }
                     }
                     else
@@ -798,7 +852,7 @@ namespace Sgml {
             }
 
             // NOTE (steveb): we need to use ConvertFromUtf32 to allow for extended numeric encodings
-            return char.ConvertFromUtf32(v);
+            return UTF32Utilities.ConvertFromUtf32(v);
         }
 
         private int ReadNumericEntityCode(out string value)
@@ -1092,7 +1146,7 @@ namespace Sgml {
                 r.Write(copyBuff, 0, len);
 
             r.Seek(0, SeekOrigin.Begin);                            
-            s.Close();
+            s.Dispose();
             return r;
         }
 
@@ -1468,8 +1522,13 @@ namespace Sgml {
             }
             return sb.ToString();
         }
-        public override void Close() {
-            stm.Close();
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (disposing)
+            {
+                stm.Dispose();
+            }
         }
     }
 
@@ -1936,7 +1995,7 @@ namespace Sgml {
     public class Group
     {
         private Group m_parent;
-        private ArrayList Members;
+        private List<object> Members;
         private GroupType m_groupType;
         private Occurrence m_occurrence;
         private bool Mixed;
@@ -1982,7 +2041,7 @@ namespace Sgml {
         public Group(Group parent)
         {
             m_parent = parent;
-            Members = new ArrayList();
+            Members = new List<object>();
             m_groupType = GroupType.None;
             m_occurrence = Occurrence.Required;
         }
@@ -2547,8 +2606,8 @@ namespace Sgml {
             try 
             {
                 dtd.Parse();
-            } 
-            catch (ApplicationException e)
+            }
+            catch (Exception e)
             {
                 throw new SgmlParseException(e.Message + dtd.m_current.Context());
             }
@@ -2580,7 +2639,7 @@ namespace Sgml {
             {
                 dtd.Parse();
             } 
-            catch (ApplicationException e)
+            catch (Exception e)
             {
                 throw new SgmlParseException(e.Message + dtd.m_current.Context());
             }
@@ -2665,7 +2724,7 @@ namespace Sgml {
                         catch (Exception ex) 
                         {
                             // BUG: need an error log.
-                            Console.WriteLine(ex.Message + this.m_current.Context());
+                            Debug.WriteLine(ex.Message + this.m_current.Context());
                         }
                         ch = this.m_current.Lastchar;
                         break;
@@ -2973,7 +3032,7 @@ namespace Sgml {
         static string ngterm = " \r\n\t|,)";
         string[] ParseNameGroup(char ch, bool nmtokens)
         {
-            ArrayList names = new ArrayList();
+            var names = new List<string>();
             if (ch == '(') 
             {
                 ch = this.m_current.ReadChar();
@@ -3008,10 +3067,10 @@ namespace Sgml {
                 name = name.ToUpperInvariant();
                 names.Add(name);
             }
-            return (string[])names.ToArray(typeof(string));
+            return names.ToArray();
         }
 
-        void ParseNameList(ArrayList names, bool nmtokens)
+        void ParseNameList(IList<string> names, bool nmtokens)
         {
             char ch = this.m_current.Lastchar;
             ch = this.m_current.SkipWhitespace();
@@ -3305,6 +3364,41 @@ namespace Sgml {
     {
         public static bool EqualsIgnoreCase(string a, string b){
             return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    internal static class UTF32Utilities
+    {
+        public static string ConvertFromUtf32(int utf32)
+        {
+#if PORTABLE
+            if (utf32 < 0 || utf32 > 0x10FFFF)
+                throw new ArgumentOutOfRangeException("utf32", "The argument must be from 0 to 0x10FFFF.");
+            if (0xD800 <= utf32 && utf32 <= 0xDFFF)
+                throw new ArgumentOutOfRangeException("utf32", "The argument must not be in surrogate pair range.");
+            if (utf32 < 0x10000)
+                return new string((char)utf32, 1);
+            utf32 -= 0x10000;
+            return new string(
+                new char[] {(char) ((utf32 >> 10) + 0xD800),
+				(char) (utf32 % 0x0400 + 0xDC00)});
+#else
+            return char.ConvertFromUtf32(utf32);
+#endif
+        }
+
+        public static int ConvertToUtf32(char highSurrogate, char lowSurrogate)
+        {
+#if PORTABLE
+            if (highSurrogate < 0xD800 || 0xDBFF < highSurrogate)
+                throw new ArgumentOutOfRangeException("highSurrogate");
+            if (lowSurrogate < 0xDC00 || 0xDFFF < lowSurrogate)
+                throw new ArgumentOutOfRangeException("lowSurrogate");
+
+            return 0x10000 + ((highSurrogate - 0xD800) << 10) + (lowSurrogate - 0xDC00);
+#else
+            return char.ConvertToUtf32(highSurrogate, lowSurrogate);
+#endif
         }
     }
 }

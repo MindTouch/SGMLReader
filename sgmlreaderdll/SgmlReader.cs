@@ -65,6 +65,18 @@ namespace Sgml
         ToLower
     }
 
+#if PORTABLE
+    /// <summary>
+    /// System.Xml.WhitespaceHandling is not available in .NETPortable.
+    /// </summary>
+    public enum WhitespaceHandling
+    {
+        All,
+        None,
+        Significant
+    }
+#endif
+
     /// <summary>
     /// This stack maintains a high water mark for allocated objects so the client
     /// can reuse the objects in the stack to reduce memory allocations, this is
@@ -443,7 +455,7 @@ namespace Sgml
                 {
                     if (this.m_docType != null && StringUtilities.EqualsIgnoreCase(this.m_docType, "html"))
                     {
-                        Assembly a = typeof(SgmlReader).Assembly;
+                        Assembly a = Assembly.GetExecutingAssembly();
                         string name = a.FullName.Split(',')[0]+".Html.dtd";
                         Stream stm = a.GetManifestResourceStream(name);
                         if (stm != null)
@@ -465,7 +477,11 @@ namespace Sgml
                     }
                     else
                     {
+#if PORTABLE
+                        throw new InvalidOperationException("Cannot load DTD without specifying base URI.");
+#else
                         baseUri = new Uri(new Uri(Directory.GetCurrentDirectory() + "/"), this.m_syslit);
+#endif
                     }
                     this.m_dtd = SgmlDtd.Parse(baseUri, this.m_docType, this.m_pubid, baseUri.AbsoluteUri, this.m_subset, this.m_proxy, null);
                 }
@@ -625,7 +641,11 @@ namespace Sgml
                     }
                     else
                     {
+#if PORTABLE
+                        throw new ArgumentException("Relative URLs are not supported.");
+#else
                         this.m_baseUri = new Uri("file:///" + Directory.GetCurrentDirectory() + "//");
+#endif
                     }
                 }
             }
@@ -689,8 +709,21 @@ namespace Sgml
         /// <summary>
         /// DTD validation errors are written to this log file.
         /// </summary>
+#if PORTABLE
+        [Obsolete("Not supported on the .NETPortable runtime.")]
+#endif
         public string ErrorLogFile
         {
+#if PORTABLE
+            get
+            {
+                throw new NotSupportedException();
+            }
+            set
+            {
+                throw new NotSupportedException();
+            }
+#else
             get
             {
                 return this.m_errorLogFile;
@@ -700,6 +733,7 @@ namespace Sgml
                 this.m_errorLogFile = value;
                 this.m_log = new StreamWriter(value);
             }
+#endif
         }
 
         private void Log(string msg, params string[] args)
@@ -1090,7 +1124,11 @@ namespace Sgml
         /// <remarks>
         /// This property applies only to an attribute node.
         /// </remarks>
+#if PORTABLE
+        public char QuoteChar
+#else
         public override char QuoteChar
+#endif
         {
             get
             {
@@ -2386,11 +2424,24 @@ namespace Sgml
             }
         }
 
+#if !PORTABLE
+        public override void Close()
+        {
+            ((IDisposable)this).Dispose();
+        }
+#endif
+
         /// <summary>
         /// Changes the <see cref="ReadState"/> to Closed.
         /// </summary>
-        public override void Close()
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+            if (!disposing)
+            {
+                return;
+            }
+
             if (this.m_current != null)
             {
                 this.m_current.Close();
@@ -2399,7 +2450,7 @@ namespace Sgml
 
             if (this.m_log != null)
             {
-                this.m_log.Close();
+                this.m_log.Dispose();
                 this.m_log = null;
             }
         }
@@ -2425,7 +2476,11 @@ namespace Sgml
         /// Reads the contents of an element or text node as a string.
         /// </summary>
         /// <returns>The contents of the element or an empty string.</returns>
+#if PORTABLE
+        public override string ReadContentAsString()
+#else
         public override string ReadString()
+#endif
         {
             if (this.m_node.NodeType == XmlNodeType.Element)
             {
@@ -2462,8 +2517,7 @@ namespace Sgml
         public override string ReadInnerXml()
         {
             StringWriter sw = new StringWriter(CultureInfo.InvariantCulture);
-            XmlTextWriter xw = new XmlTextWriter(sw);
-            xw.Formatting = Formatting.Indented;
+            XmlWriter xw = XmlWriter.Create(sw, new XmlWriterSettings { Indent = true, IndentChars = "  "});
             switch (this.NodeType)
             {
                 case XmlNodeType.Element:
@@ -2482,7 +2536,11 @@ namespace Sgml
                     break;
             }
 
+#if PORTABLE
+            xw.Dispose();
+#else
             xw.Close();
+#endif
             return sw.ToString();
         }
 
@@ -2495,10 +2553,13 @@ namespace Sgml
         public override string ReadOuterXml()
         {
             StringWriter sw = new StringWriter(CultureInfo.InvariantCulture);
-            XmlTextWriter xw = new XmlTextWriter(sw);
-            xw.Formatting = Formatting.Indented;
+            XmlWriter xw = XmlWriter.Create(sw, new XmlWriterSettings {Indent = true, IndentChars = "  "});
             xw.WriteNode(this, true);
+#if PORTABLE
+            xw.Dispose();
+#else
             xw.Close();
+#endif
             return sw.ToString();
         }
 
