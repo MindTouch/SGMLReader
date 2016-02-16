@@ -452,6 +452,17 @@ namespace Sgml
                             this.m_dtd = SgmlDtd.Parse(baseUri, "HTML", sr, null, this.m_proxy, null);
                         }
                     }
+                    else if (this.m_docType != null && StringUtilities.EqualsIgnoreCase(this.m_docType, "ofx"))
+                    {
+                        Assembly a = typeof(SgmlReader).Assembly;
+                        string name = a.FullName.Split(',')[0] + ".ofx160.dtd";
+                        Stream stm = a.GetManifestResourceStream(name);
+                        if (stm != null)
+                        {
+                            StreamReader sr = new StreamReader(stm);
+                            this.m_dtd = SgmlDtd.Parse(baseUri, "OFX", sr, null, this.m_proxy, null);
+                        }
+                    }
                 }
                 else
                 { 
