@@ -471,6 +471,12 @@ namespace Sgml
                 }
             }
 
+            // If DocType was specified explicitly, trust it.
+            if (this.m_dtd == null && this.m_ignoreDtd)
+            {
+                this.m_isHtml = StringUtilities.EqualsIgnoreCase(this.m_docType, "html");
+            }
+
             if (this.m_dtd != null && this.m_dtd.Name != null)
             {
                 switch(this.CaseFolding)
@@ -1417,9 +1423,9 @@ namespace Sgml
             if (this.m_current.ResolvedUri != null)
                 this.m_baseUri = this.m_current.ResolvedUri;
 
-            if (this.m_current.IsHtml && this.m_dtd == null)
+            if (this.m_current.IsHtml && this.m_dtd == null
+                && !StringUtilities.EqualsIgnoreCase(this.m_docType, "HTML"))   // No need to reload DTD in case m_docType == "HTML"
             {
-                this.m_docType = "HTML";
                 LazyLoadDtd(this.m_baseUri);
             }
         }
