@@ -398,6 +398,9 @@ namespace Sgml
         private bool m_stripDocType = true;
         //private string m_startTag;
         private Dictionary<string, string> unknownNamespaces = new Dictionary<string,string>();
+        private XmlNameTable m_nameTable;
+        private XmlReaderSettings m_settings;
+
 
         /// <summary>
         /// Initialises a new instance of the SgmlReader class.
@@ -411,8 +414,20 @@ namespace Sgml
         /// </summary>
         /// <param name="nt">The nametable to use.</param>
         public SgmlReader(XmlNameTable nt) {
+            m_nameTable = nt;
             Init();
         }
+
+        /// <summary>
+        /// Initialises a new instance of the SgmlReader class.
+        /// </summary>
+        public SgmlReader(XmlReaderSettings settings)
+        {
+            m_settings = settings;
+            m_nameTable = settings.NameTable;
+            Init();
+        }
+
 
         /// <summary>
         /// Specify the SgmlDtd object directly.  This allows you to cache the Dtd and share
@@ -733,6 +748,15 @@ namespace Sgml
 
         private void Init()
         {
+            if (m_nameTable == null)
+            {
+                m_nameTable = new NameTable();
+            }
+            if (m_settings == null)
+            {
+                m_settings = new XmlReaderSettings();
+                m_settings.NameTable = m_nameTable;
+            }
             this.m_state = State.Initial;
             this.m_stack = new HWStack(10);
             this.m_node = Push(null, XmlNodeType.Document, null);
@@ -1534,7 +1558,7 @@ namespace Sgml
                     // strip out whitespace (caller is probably pretty printing the XML).
                     foundnode = false;
                 }
-                if (!foundnode && this.m_state == State.Eof && this.m_stack.Count > 1)
+                if (!foundnode && this.m_state == State.Eof && this.m_stack.Count > 1 && this.m_rootCount == 0)
                 {
                     this.m_poptodepth = 1;
                     this.m_state = State.AutoClose;
@@ -1806,7 +1830,7 @@ namespace Sgml
 
             if (this.Depth == 1)
             {
-                if (this.m_rootCount == 1)
+                if (this.m_rootCount == 1 && m_settings.ConformanceLevel != ConformanceLevel.Fragment)
                 {
                     // Hmmm, we found another root level tag, soooo, the only
                     // thing we can do to keep this a valid XML document is stop
@@ -2510,7 +2534,7 @@ namespace Sgml
         {
             get
             {
-                return null;
+                return m_nameTable;
             }
         }
 

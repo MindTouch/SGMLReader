@@ -26,6 +26,8 @@ using System.IO;
 using System.Xml;
 using NUnit.Framework;
 using Sgml;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace SGMLTests {
 
@@ -382,6 +384,49 @@ namespace SGMLTests {
             string value = element.Value;
             Assert.IsFalse(string.IsNullOrEmpty(value), "element has no value");
             Assert.AreNotEqual((char)65535, value[value.Length - 1], "unexpected -1 as last char");
+        }
+
+        [Test]
+        public void Test_fragment_parsing()
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.ConformanceLevel = ConformanceLevel.Fragment;
+            StringReader stream = new StringReader("<html><head></head><body></body></html> <script></script>");
+
+            int count = 0;
+            SgmlReader reader = new SgmlReader(settings);
+            string dtdUri = @"d:\TfsPreview\Tools\SGMLReader\SgmlReader\Html.dtd";
+            reader.Dtd = SgmlDtd.Parse(new Uri(dtdUri), "HTML", "-//W3C//DTD HTML 4.01 Transitional//EN", dtdUri, null, null, reader.NameTable);
+            reader.InputStream = stream;
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element)
+                {
+                    XDocument doc = XDocument.Load(reader.ReadSubtree());
+                    Debug.WriteLine(doc.ToString());
+                    count++;
+                }
+            }
+            Assert.AreEqual(2, count, "Expecing 2 XmlDocuments in the input stream");
+        }
+
+        [Test]
+        public void Test_XPathDocument()
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.ConformanceLevel = ConformanceLevel.Fragment;
+            StringReader stream = new StringReader("<html><head></head><script></script><body><p>Test</html> ");
+            
+            SgmlReader reader = new SgmlReader(settings);
+            string dtdUri = @"d:\TfsPreview\Tools\SGMLReader\SgmlReader\Html.dtd";
+            reader.Dtd = SgmlDtd.Parse(new Uri(dtdUri), "HTML", "-//W3C//DTD HTML 4.01 Transitional//EN", dtdUri, null, null, reader.NameTable);
+            reader.InputStream = stream;
+
+            XPathDocument doc = new XPathDocument(reader);
+
+            string expected = @"<html><head></head><script></script><body><p>Test</p></body></html>";
+            string actual = doc.CreateNavigator().OuterXml.Replace("\n","").Replace("\r","").Replace(" ","");
+            Assert.AreEqual(expected, actual, "Expecing same XML document");
         }
     }
 }
