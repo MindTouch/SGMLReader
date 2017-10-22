@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SgmlReaderCore</id>
+    <version>0.9.0.0</version>
+    <authors>Chris Lovett, Steve Bjorg, Olavo Rocha Neto</authors>
+    <owners>Steve Bjorg, Andy Sherwood, Olavo Rocha Neto</owners>
+    <licenseUrl>https://github.com/ExodusSistemas/SgmlReaderCore/blob/master/license.txt</licenseUrl>
+    <projectUrl>https://github.com/ExodusSistemas/SgmlReaderCore</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Converts SGML to XML via XmlReader API</summary>
+    <description>SgmlReader is a versatile C# .NET library written by Chris Lovett for parsing HTML/SGML files using the XmlReader API. This is a port to .net core for netstandard2.0 from version 1.8.12</description>
+    <tags>SGML XML</tags>
+    <copyright>Copyright © 2002, Microsoft Corporation; Copyright © 2007-2013, MindTouch, Copyright © 2018, Exodus Sistemas</copyright>
+  </metadata>
+</package>

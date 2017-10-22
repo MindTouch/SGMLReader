@@ -1,0 +1,10 @@
+﻿<html>
+<body><span text="foo<bar"/>
+</body>
+</html>
+`
+<html>
+  <body>
+    <span text="foo&lt;bar" />
+  </body>
+</html>

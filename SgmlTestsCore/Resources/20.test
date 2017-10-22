@@ -1,0 +1,8 @@
+﻿<html><body><title>Title</title><foo>foo</foo></body></html>
+`
+<html>
+  <body>
+    <title>Title</title>
+    <foo>foo</foo>
+  </body>
+</html>

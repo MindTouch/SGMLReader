@@ -1,0 +1,5 @@
+﻿<html xmlns:o="http://microsoft.com"><body>A<o:p></o:p>B<o:p></o:p></body></html>
+`
+<html xmlns:o="http://microsoft.com">
+  <body>A<o:p />B<o:p /></body>
+</html>

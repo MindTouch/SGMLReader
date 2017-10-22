@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0869BE5-15C0-4F2D-A94A-5534163302A1}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		license.txt = license.txt
+		ReadMe.md = ReadMe.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SgmlReaderCore", "SgmlReaderCore\SgmlReaderCore.csproj", "{F62B1BFE-15BE-4D9E-A3EF-AFDD21253FD3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SgmlTestsCore", "SgmlTestsCore\SgmlTestsCore.csproj", "{36986F8B-0062-4D26-BB51-2ACC401DFEFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SgmlReaderCli", "SgmlReaderCli\SgmlReaderCli.csproj", "{D50A5C61-FB72-4CA1-800E-2ED40150AC51}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Default|Any CPU = Default|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F62B1BFE-15BE-4D9E-A3EF-AFDD21253FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F62B1BFE-15BE-4D9E-A3EF-AFDD21253FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F62B1BFE-15BE-4D9E-A3EF-AFDD21253FD3}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{F62B1BFE-15BE-4D9E-A3EF-AFDD21253FD3}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{F62B1BFE-15BE-4D9E-A3EF-AFDD21253FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F62B1BFE-15BE-4D9E-A3EF-AFDD21253FD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36986F8B-0062-4D26-BB51-2ACC401DFEFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36986F8B-0062-4D26-BB51-2ACC401DFEFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36986F8B-0062-4D26-BB51-2ACC401DFEFD}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{36986F8B-0062-4D26-BB51-2ACC401DFEFD}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{36986F8B-0062-4D26-BB51-2ACC401DFEFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36986F8B-0062-4D26-BB51-2ACC401DFEFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D50A5C61-FB72-4CA1-800E-2ED40150AC51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D50A5C61-FB72-4CA1-800E-2ED40150AC51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D50A5C61-FB72-4CA1-800E-2ED40150AC51}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{D50A5C61-FB72-4CA1-800E-2ED40150AC51}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{D50A5C61-FB72-4CA1-800E-2ED40150AC51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D50A5C61-FB72-4CA1-800E-2ED40150AC51}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2C4742A2-74AC-4D0A-8F8C-3EB0301D2A89}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = SgmlReader\SgmlReader.csproj
+	EndGlobalSection
+EndGlobal

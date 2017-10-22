@@ -1,5 +1,0 @@
-﻿<html>
-<![CDATA[this is a CDATA block with markup <table><tr><td> ]]>
-</html>
-`
-<html><![CDATA[this is a CDATA block with markup <table><tr><td> ]]></html>

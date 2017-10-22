@@ -1,0 +1,7 @@
+﻿<html> 
+  <img src="img.gif" height"4" width= 2 > 
+</html>
+`
+<html>
+  <img src="img.gif" height="4" width="2" />
+</html>

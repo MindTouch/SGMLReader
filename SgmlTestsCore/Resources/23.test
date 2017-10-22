@@ -1,0 +1,6 @@
+﻿<html xmlns="http://implicit" xmlns:n="http://explicit"><foo attr1="1" n:attr2="2" /><n:foo attr1="1" n:attr2="2" /></html>
+`
+<html xmlns="http://implicit" xmlns:n="http://explicit">
+  <foo attr1="1" n:attr2="2" />
+  <n:foo attr1="1" n:attr2="2" />
+</html>
