@@ -1,6 +1,0 @@
-﻿<html xmlns:n="http://explicit"><foo attr1="1" n:attr2="2" /><n:foo attr1="1" n:attr2="2" /></html>
-`
-<html xmlns:n="http://explicit">
-  <foo attr1="1" n:attr2="2" />
-  <n:foo attr1="1" n:attr2="2" />
-</html>

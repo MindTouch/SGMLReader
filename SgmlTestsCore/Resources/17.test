@@ -1,0 +1,9 @@
+﻿<html>
+    <body>
+       <something@something.com>
+    </body>
+</html>
+`
+<html>
+  <body>&lt;something@something.com&gt;</body>
+</html>

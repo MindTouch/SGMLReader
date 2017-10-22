@@ -1,0 +1,5 @@
+﻿<html><body>A<o:p></o:p>B<o:p></o:p></body></html>
+`
+<html>
+  <body>A<o:p xmlns:o="#unknown"></o:p>B<o:p xmlns:o="#unknown"></o:p></body>
+</html>

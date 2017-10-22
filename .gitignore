@@ -1,4 +1,6 @@
 bin/
+**/bin/
+*/Properties/
 dist/
 *resharper.user
 [Dd]ebug/
@@ -20,3 +22,7 @@ SGMLTests/test-results/*.xml
 test-results/*.xml
 *.test-cache
 build/
+.vs
+.vscode
+packages/
+
