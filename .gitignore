@@ -2,6 +2,7 @@ bin/
 **/bin/
 */Properties/
 dist/
+packages/
 *resharper.user
 [Dd]ebug/
 [Rr]elease/
@@ -24,5 +25,5 @@ test-results/*.xml
 build/
 .vs
 .vscode
-packages/
+
 
