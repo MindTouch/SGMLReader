@@ -73,7 +73,7 @@ DTD validation errors are written to this log file.
 
 The command line executable version has the following options:
 
-    donet sgmlreader.dll <options> [InputUri] [OutputFile]
+    dotnet sgmlreader.dll <options> [InputUri] [OutputFile]
 
 * -e "file" : Specifies a file to write error output to.  The default is to 
 generate no errors.  The special name "$stderr" redirects errors to stderr 
@@ -97,17 +97,17 @@ the default being ".xml".
 
 Converts all .htm files to corresponding .xml files using the built in HTML DTD.
 
-    donet sgmlreader.dll -html *.htm *.xml
+    dotnet sgmlreader.dll -html *.htm *.xml
 
 Converts all the MSN home page to XML storing the result in the local file 
 "msn.xml".
 
-    donet sgmlreader.dll -html http://www.msn.com -proxy myproxy:80 msn.xml
+    dotnet sgmlreader.dll -html http://www.msn.com -proxy myproxy:80 msn.xml
 
 Converts the given OFX file to XML using the SGML DTD "ofx160.dtd" specified in 
 the test.ofx file.
 
-    donet sgmlreader.dll -dtd ofx160.dtd test.ofx ofx.xml
+    dotnet sgmlreader.dll -dtd ofx160.dtd test.ofx ofx.xml
 
 ## Community
 If you have questions, please post them on 
