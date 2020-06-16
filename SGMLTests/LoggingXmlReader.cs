@@ -45,7 +45,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.NodeType;
+                XmlNodeType result = _reader.NodeType;
                 _logger.WriteLine("NodeType = {0}", result);
                 return result;
             }
@@ -55,7 +55,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.Name;
+                string result = _reader.Name;
                 _logger.WriteLine("Name = {0}", result);
                 return result;
             }
@@ -65,7 +65,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.LocalName;
+                string result = _reader.LocalName;
                 _logger.WriteLine("LocalName = {0}", result);
                 return result;
             }
@@ -75,7 +75,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.NamespaceURI;
+                string result = _reader.NamespaceURI;
                 _logger.WriteLine("NamespaceURI = {0}", result);
                 return result;
             }
@@ -85,7 +85,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.Prefix;
+                string result = _reader.Prefix;
                 _logger.WriteLine("Prefix = {0}", result);
                 return result;
             }
@@ -95,7 +95,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.HasValue;
+                bool result = _reader.HasValue;
                 _logger.WriteLine("HasValue = {0}", result);
                 return result;
             }
@@ -105,7 +105,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.Value;
+                string result = _reader.Value;
                 _logger.WriteLine("Value = {0}", result);
                 return result;
             }
@@ -115,7 +115,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.Depth;
+                int result = _reader.Depth;
                 _logger.WriteLine("Depth = {0}", result);
                 return result;
             }
@@ -125,7 +125,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.BaseURI;
+                string result = _reader.BaseURI;
                 _logger.WriteLine("BaseURI = {0}", result);
                 return result;
             }
@@ -135,7 +135,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.IsEmptyElement;
+                bool result = _reader.IsEmptyElement;
                 _logger.WriteLine("IsEmptyElement = {0}", result);
                 return result;
             }
@@ -145,7 +145,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.IsDefault;
+                bool result = _reader.IsDefault;
                 _logger.WriteLine("IsDefault = {0}", result);
                 return result;
             }
@@ -155,7 +155,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.QuoteChar;
+                char result = _reader.QuoteChar;
                 _logger.WriteLine("QuoteChar = {0}", result);
                 return result;
             }
@@ -165,7 +165,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.XmlSpace;
+                XmlSpace result = _reader.XmlSpace;
                 _logger.WriteLine("XmlSpace = {0}", result);
                 return result;
             }
@@ -175,7 +175,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.XmlLang;
+                string result = _reader.XmlLang;
                 _logger.WriteLine("XmlLang = {0}", result);
                 return result;
             }
@@ -184,7 +184,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.AttributeCount;
+                int result = _reader.AttributeCount;
                 _logger.WriteLine("AttributeCount = {0}", result);
                 return result;
             }
@@ -194,7 +194,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader[i];
+                string result = _reader[i];
                 _logger.WriteLine("this[i] = {0}", result);
                 return result;
             }
@@ -204,7 +204,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader[name];
+                string result = _reader[name];
                 _logger.WriteLine("this[name] = {0}", result);
                 return result;
             }
@@ -214,7 +214,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader[name, namespaceURI];
+                string result = _reader[name, namespaceURI];
                 _logger.WriteLine("this[name, namespaceURI] = {0}", result);
                 return result;
             }
@@ -224,7 +224,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.NameTable;
+                XmlNameTable result = _reader.NameTable;
                 _logger.WriteLine("NameTable = {0}", result);
                 return result;
             }
@@ -234,7 +234,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.EOF;
+                bool result = _reader.EOF;
                 _logger.WriteLine("EOF = {0}", result);
                 return result;
             }
@@ -244,7 +244,7 @@ namespace SGMLTests {
         {
             get
             {
-                var result = _reader.ReadState;
+                ReadState result = _reader.ReadState;
                _logger.WriteLine("ReadState = {0}", result);
                 return result;
             }
@@ -253,35 +253,35 @@ namespace SGMLTests {
         //--- Methods ---
         public override string GetAttribute(string name)
         {
-            var result = _reader.GetAttribute(name);
+            string result = _reader.GetAttribute(name);
             _logger.WriteLine("GetAttribute('{1}') = {0}", result, name);
             return result;
         }
 
         public override string GetAttribute(string name, string namespaceURI)
         {
-            var result = _reader.GetAttribute(name, namespaceURI);
+            string result = _reader.GetAttribute(name, namespaceURI);
             _logger.WriteLine("GetAttribute('{1}', '{2}') = {0}", result, name, namespaceURI);
             return result;
         }
 
         public override string GetAttribute(int i)
         {
-            var result = _reader.GetAttribute(i);
+            string result = _reader.GetAttribute(i);
             _logger.WriteLine("GetAttribute({1}) = {0}", result, i);
             return result;
         }
 
         public override bool MoveToAttribute(string name)
         {
-            var result = _reader.MoveToAttribute(name);
+            bool result = _reader.MoveToAttribute(name);
             _logger.WriteLine("MoveToAttribute('{1}') = {0}", result, name);
             return result;
         }
 
         public override bool MoveToAttribute(string name, string ns)
         {
-            var result = _reader.MoveToAttribute(name, ns);
+            bool result = _reader.MoveToAttribute(name, ns);
             _logger.WriteLine("MoveToAttribute('{1}', '{2}') = {0}", result, name, ns);
             return result;
         }
@@ -294,28 +294,28 @@ namespace SGMLTests {
 
         public override bool MoveToFirstAttribute()
         {
-            var result = _reader.MoveToFirstAttribute();
+            bool result = _reader.MoveToFirstAttribute();
             _logger.WriteLine("MoveToFirstAttribute() = {0}", result);
             return result;
         }
 
         public override bool MoveToNextAttribute()
         {
-            var result = _reader.MoveToNextAttribute();
+            bool result = _reader.MoveToNextAttribute();
             _logger.WriteLine("MoveToNextAttribute() = {0}", result);
             return result;
         }
 
         public override bool MoveToElement()
         {
-            var result = _reader.MoveToElement();
+            bool result = _reader.MoveToElement();
             _logger.WriteLine("MoveToElement() = {0}", result);
             return result;
         }
 
         public override bool Read()
         {
-            var result = _reader.Read();
+            bool result = _reader.Read();
             _logger.WriteLine("Read() = {0}", result);
             return result;
         }
@@ -328,28 +328,28 @@ namespace SGMLTests {
 
         public override string ReadString()
         {
-            var result = _reader.ReadString();
+            string result = _reader.ReadString();
             _logger.WriteLine("ReadString() = {0}", result);
             return result;
         }
 
         public override string ReadInnerXml()
         {
-            var result = _reader.ReadInnerXml();
+            string result = _reader.ReadInnerXml();
             _logger.WriteLine("ReadInnerXml() = {0}", result);
             return result;
         }
 
         public override string ReadOuterXml()
         {
-            var result = _reader.ReadOuterXml();
+            string result = _reader.ReadOuterXml();
             _logger.WriteLine("ReadOuterXml() = {0}", result);
             return result;
         }
 
         public override string LookupNamespace(string prefix)
         {
-            var result = _reader.LookupNamespace(prefix);
+            string result = _reader.LookupNamespace(prefix);
             _logger.WriteLine("LookupNamespace('{1}') = {0}", result, prefix);
             return result;
         }
@@ -362,7 +362,7 @@ namespace SGMLTests {
 
         public override bool ReadAttributeValue()
         {
-            var result = _reader.ReadAttributeValue();
+            bool result = _reader.ReadAttributeValue();
             _logger.WriteLine("ReadAttributeValue() = {0}", result);
             return result;
         }

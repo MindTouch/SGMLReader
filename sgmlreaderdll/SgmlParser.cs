@@ -39,7 +39,7 @@ namespace Sgml {
     [Serializable]
     public class SgmlParseException : Exception
     {
-        private string m_entityContext;
+        private readonly string m_entityContext;
 
         /// <summary>
         /// Instantiates a new instance of SgmlParseException with no specific error information.
@@ -153,12 +153,12 @@ namespace Sgml {
         [SuppressMessage("Microsoft.Naming", "CA1705", Justification = "The capitalisation is correct since EOF is an acronym.")]
         public const char EOF = (char)65535;
 
-        private string m_proxy;
-        private string m_name;
-        private bool m_isInternal;
-        private string m_publicId;
-        private string m_uri;
-        private string m_literal;
+        private readonly string m_proxy;
+        private readonly string m_name;
+        private readonly bool m_isInternal;
+        private readonly string m_publicId;
+        private readonly string m_uri;
+        private readonly string m_literal;
         private LiteralType m_literalType;
         private Entity m_parent;
         private bool m_isHtml;
@@ -273,8 +273,8 @@ namespace Sgml {
         {
             get
             {
-                if (this.m_resolvedUri != null)
-                    return this.m_resolvedUri;
+                if (m_resolvedUri != null)
+                    return m_resolvedUri;
                 else if (m_parent != null)
                     return m_parent.ResolvedUri;
                 else
@@ -322,7 +322,7 @@ namespace Sgml {
         {
             get
             {
-                return this.m_absolutePos - this.m_lineStart + 1;
+                return m_absolutePos - m_lineStart + 1;
             }
         }
 
@@ -388,25 +388,25 @@ namespace Sgml {
         /// <returns>The next character from the DTD stream.</returns>
         public char ReadChar()
         {
-            char ch = (char)this.m_stm.Read();
+            char ch = (char)m_stm.Read();
             if (ch == 0)
             {
                 // convert nulls to whitespace, since they are not valid in XML anyway.
                 ch = ' ';
             }
-            this.m_absolutePos++;
+            m_absolutePos++;
             if (ch == 0xa)
             {
                 m_isWhitespace = true;
-                this.m_lineStart = this.m_absolutePos + 1;
-                this.m_line++;
+                m_lineStart = m_absolutePos + 1;
+                m_line++;
             } 
             else if (ch == ' ' || ch == '\t')
             {
                 m_isWhitespace = true;
                 if (m_lastchar == 0xd)
                 {
-                    this.m_lineStart = this.m_absolutePos;
+                    m_lineStart = m_absolutePos;
                     m_line++;
                 }
             }
@@ -420,7 +420,7 @@ namespace Sgml {
                 if (m_lastchar == 0xd)
                 {
                     m_line++;
-                    this.m_lineStart = this.m_absolutePos;
+                    m_lineStart = m_absolutePos;
                 }
             } 
 
@@ -435,37 +435,37 @@ namespace Sgml {
         /// <param name="baseUri">The base Uri for processing this entity within.</param>
         public void Open(Entity parent, Uri baseUri)
         {
-            this.m_parent = parent;
+            m_parent = parent;
             if (parent != null)
-                this.m_isHtml = parent.IsHtml;
-            this.m_line = 1;
+                m_isHtml = parent.IsHtml;
+            m_line = 1;
             if (m_isInternal)
             {
-                if (this.m_literal != null)
-                    this.m_stm = new StringReader(this.m_literal);
+                if (m_literal != null)
+                    m_stm = new StringReader(m_literal);
             } 
-            else if (this.m_uri == null)
+            else if (m_uri == null)
             {
-                this.Error("Unresolvable entity '{0}'", this.m_name);
+                Error("Unresolvable entity '{0}'", m_name);
             }
             else
             {
                 if (baseUri != null)
                 {
-                    this.m_resolvedUri = new Uri(baseUri, this.m_uri);
+                    m_resolvedUri = new Uri(baseUri, m_uri);
                 }
                 else
                 {
-                    this.m_resolvedUri = new Uri(this.m_uri);
+                    m_resolvedUri = new Uri(m_uri);
                 }
 
                 Stream stream = null;
                 Encoding e = Encoding.Default;
-                switch (this.m_resolvedUri.Scheme)
+                switch (m_resolvedUri.Scheme)
                 {
                     case "file":
                         {
-                            string path = this.m_resolvedUri.LocalPath;
+                            string path = m_resolvedUri.LocalPath;
                             stream = new FileStream(path, FileMode.Open, FileAccess.Read);
                         }
                         break;
@@ -482,9 +482,9 @@ namespace Sgml {
 
                         WebResponse resp = wr.GetResponse();
                         Uri actual = resp.ResponseUri;
-                        if (!string.Equals(actual.AbsoluteUri, this.m_resolvedUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
+                        if (!string.Equals(actual.AbsoluteUri, m_resolvedUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
                         {
-                            this.m_resolvedUri = actual;
+                            m_resolvedUri = actual;
                         }
                         string contentType = resp.ContentType.ToLowerInvariant();
                         string mimeType = contentType;
@@ -496,7 +496,7 @@ namespace Sgml {
 
                         if (StringUtilities.EqualsIgnoreCase(mimeType, "text/html"))
                         {
-                            this.m_isHtml = true;
+                            m_isHtml = true;
                         }
 
                         i = contentType.IndexOf("charset");
@@ -526,10 +526,10 @@ namespace Sgml {
                         break;
                 }
 
-                this.m_weOwnTheStream = true;
+                m_weOwnTheStream = true;
                 HtmlStream html = new HtmlStream(stream, e);
-                this.m_encoding = html.Encoding;
-                this.m_stm = html;
+                m_encoding = html.Encoding;
+                m_stm = html;
             }
         }
 
@@ -540,7 +540,7 @@ namespace Sgml {
         {
             get
             {
-                return this.m_encoding;
+                return m_encoding;
             }
         }
         
@@ -549,8 +549,8 @@ namespace Sgml {
         /// </summary>
         public void Close()
         {
-            if (this.m_weOwnTheStream) 
-                this.m_stm.Close();
+            if (m_weOwnTheStream) 
+                m_stm.Close();
         }
 
         /// <summary>
@@ -626,7 +626,7 @@ namespace Sgml {
                     {
                         string charent = ExpandCharEntity();
                         sb.Append(charent);
-                        ch = this.m_lastchar;
+                        ch = m_lastchar;
                     } 
                     else
                     {
@@ -750,15 +750,14 @@ namespace Sgml {
         /// <returns>The string for the character entity.</returns>
         public string ExpandCharEntity()
         {
-            string value;
-            int v = ReadNumericEntityCode(out value);
-            if(v == -1)
+            int v = ReadNumericEntityCode(out string value);
+            if (v == -1)
             {
                 return value;
             }
 
             // HACK ALERT: IE and Netscape map the unicode characters 
-            if (this.m_isHtml && v >= 0x80 & v <= 0x9F)
+            if (m_isHtml && v >= 0x80 & v <= 0x9F)
             {
                 // This range of control characters is mapped to Windows-1252!
                 int i = v - 0x80;
@@ -774,9 +773,8 @@ namespace Sgml {
                     char ch = ReadChar();
                     if (ch == '#')
                     {
-                        string value2;
-                        int v2 = ReadNumericEntityCode(out value2);
-                        if(v2 == -1)
+                        int v2 = ReadNumericEntityCode(out string value2);
+                        if (v2 == -1)
                         {
                             return value + ";" + value2;
                         }
@@ -875,7 +873,7 @@ namespace Sgml {
             return v;
         }
 
-        static int[] CtrlMap = new int[] {
+        static readonly int[] CtrlMap = new int[] {
                                              // This is the windows-1252 mapping of the code points 0x80 through 0x9f.
                                              8364, 129, 8218, 402, 8222, 8230, 8224, 8225, 710, 8240, 352, 8249, 338, 141,
                                              381, 143, 144, 8216, 8217, 8220, 8221, 8226, 8211, 8212, 732, 8482, 353, 8250, 
@@ -972,13 +970,13 @@ namespace Sgml {
             switch (token)
             {
                 case "CDATA":
-                    this.m_literalType = LiteralType.CDATA;
+                    m_literalType = LiteralType.CDATA;
                     break;
                 case "SDATA":
-                    this.m_literalType = LiteralType.SDATA;
+                    m_literalType = LiteralType.SDATA;
                     break;
                 case "PI":
-                    this.m_literalType = LiteralType.PI;
+                    m_literalType = LiteralType.PI;
                     break;
             }
         }
@@ -1024,12 +1022,12 @@ namespace Sgml {
     // This class decodes an HTML/XML stream correctly.
     internal class HtmlStream : TextReader
     {
-        private Stream stm;
-        private byte[] rawBuffer;
+        private readonly Stream stm;
+        private readonly byte[] rawBuffer;
         private int rawPos;
         private int rawUsed;
         private Encoding m_encoding;
-        private Decoder m_decoder;
+        private readonly Decoder m_decoder;
         private char[] m_buffer;
         private int used;
         private int pos;
@@ -1046,31 +1044,31 @@ namespace Sgml {
             this.stm = stm;
             rawBuffer = new Byte[BUFSIZE];
             rawUsed = stm.Read(rawBuffer, 0, 4); // maximum byte order mark
-            this.m_buffer = new char[BUFSIZE];
+            m_buffer = new char[BUFSIZE];
 
             // Check byte order marks
-            this.m_decoder = AutoDetectEncoding(rawBuffer, ref rawPos, rawUsed);
+            m_decoder = AutoDetectEncoding(rawBuffer, ref rawPos, rawUsed);
             int bom = rawPos;
-            if (this.m_decoder == null)
+            if (m_decoder == null)
             {
-                this.m_decoder = defaultEncoding.GetDecoder();
+                m_decoder = defaultEncoding.GetDecoder();
                 rawUsed += stm.Read(rawBuffer, 4, BUFSIZE-4);                
                 DecodeBlock();
                 // Now sniff to see if there is an XML declaration or HTML <META> tag.
                 Decoder sd = SniffEncoding();
                 if (sd != null) {
-                    this.m_decoder = sd;
+                    m_decoder = sd;
                 }
             }            
 
             // Reset to get ready for Read()
             this.stm.Seek(0, SeekOrigin.Begin);
-            this.pos = this.used = 0;
+            pos = used = 0;
             // skip bom
             if (bom>0){
-                stm.Read(this.rawBuffer, 0, bom);
+                stm.Read(rawBuffer, 0, bom);
             }
-            this.rawPos = this.rawUsed = 0;
+            rawPos = rawUsed = 0;
             
         }
 
@@ -1078,7 +1076,7 @@ namespace Sgml {
         {
             get
             {
-                return this.m_encoding;
+                return m_encoding;
             }
         }
 
@@ -1117,7 +1115,7 @@ namespace Sgml {
         }
         internal static Decoder AutoDetectEncoding(byte[] buffer, ref int index, int length) {
             if (4 <= (length - index)) {
-                uint w = (uint)buffer[index + 0] << 24 | (uint)buffer[index + 1] << 16 | (uint)buffer[index + 2] << 8 | (uint)buffer[index + 3];
+                uint w = ((uint)buffer[index + 0] << 24) | ((uint)buffer[index + 1] << 16) | ((uint)buffer[index + 2] << 8) | (uint)buffer[index + 3];
                 // see if it's a 4-byte encoding
                 switch (w) {
                     case 0xfefffeff: 
@@ -1196,7 +1194,7 @@ namespace Sgml {
             int quoteChar = PeekChar();
             if (quoteChar == '\'' || quoteChar == '"') {
                 ReadChar();// consume quote char
-                int i = this.pos;
+                int i = pos;
                 int ch = ReadChar();
                 while (ch != EOF && ch != quoteChar) {
                     ch = ReadChar();
@@ -1260,7 +1258,7 @@ namespace Sgml {
                             Encoding enc = Encoding.GetEncoding(encoding);
                             if (enc != null)
                             {
-                                this.m_encoding = enc;
+                                m_encoding = enc;
                                 return enc.GetDecoder();
                             }
                         }
@@ -1323,7 +1321,7 @@ namespace Sgml {
                                     try
                                     {
                                         Encoding e = Encoding.GetEncoding(charset);
-                                        this.m_encoding = e;
+                                        m_encoding = e;
                                         return e.GetDecoder();
                                     } catch (ArgumentException) {}
                                 }                                
@@ -1420,7 +1418,7 @@ namespace Sgml {
             }
             if (pos < used) {
                 length = Math.Min(used - pos, length);
-                Array.Copy(this.m_buffer, pos, buffer, start, length);
+                Array.Copy(m_buffer, pos, buffer, start, length);
                 pos += length;
                 return length;
             }
@@ -1511,7 +1509,7 @@ namespace Sgml {
         internal static char UnicodeToUTF16(UInt32 code) {
             byte lowerByte, higherByte;
             lowerByte = (byte)(0xD7C0 + (code >> 10));
-            higherByte = (byte)(0xDC00 | code & 0x3ff);
+            higherByte = (byte)(0xDC00 | (code & 0x3ff));
             return ((char)((higherByte << 8) | lowerByte));
         }
     }
@@ -1573,12 +1571,12 @@ namespace Sgml {
     /// </summary>
     public class ElementDecl
     {
-        private string m_name;
-        private bool m_startTagOptional;
-        private bool m_endTagOptional;
-        private ContentModel m_contentModel;
-        private string[] m_inclusions;
-        private string[] m_exclusions;
+        private readonly string m_name;
+        private readonly bool m_startTagOptional;
+        private readonly bool m_endTagOptional;
+        private readonly ContentModel m_contentModel;
+        private readonly string[] m_inclusions;
+        private readonly string[] m_exclusions;
         private Dictionary<string, AttDef> m_attList;
 
         /// <summary>
@@ -1657,8 +1655,7 @@ namespace Sgml {
             if (m_attList == null)
                 throw new InvalidOperationException("The attribute list for the element declaration has not been initialised.");
 
-            AttDef a;
-            m_attList.TryGetValue(name.ToUpperInvariant(), out a);
+            m_attList.TryGetValue(name.ToUpperInvariant(), out AttDef a);
             return a;
         }
 
@@ -1850,13 +1847,13 @@ namespace Sgml {
             switch (dc)
             {
                 case "EMPTY":
-                    this.m_declaredContent = DeclaredContent.EMPTY;
+                    m_declaredContent = DeclaredContent.EMPTY;
                     break;
                 case "RCDATA":
-                    this.m_declaredContent = DeclaredContent.RCDATA;
+                    m_declaredContent = DeclaredContent.RCDATA;
                     break;
                 case "CDATA":
-                    this.m_declaredContent = DeclaredContent.CDATA;
+                    m_declaredContent = DeclaredContent.CDATA;
                     break;
                 default:
                     throw new SgmlParseException(string.Format(CultureInfo.CurrentUICulture, "Declared content type '{0}' is not supported", dc));
@@ -1935,8 +1932,8 @@ namespace Sgml {
     /// </summary>
     public class Group
     {
-        private Group m_parent;
-        private ArrayList Members;
+        private readonly Group m_parent;
+        private readonly ArrayList Members;
         private GroupType m_groupType;
         private Occurrence m_occurrence;
         private bool Mixed;
@@ -1960,7 +1957,7 @@ namespace Sgml {
         {
             get
             {
-                return this.Mixed && Members.Count == 0;
+                return Mixed && Members.Count == 0;
             }
         }
 
@@ -2041,7 +2038,7 @@ namespace Sgml {
                     break;
             }
 
-            if (this.m_groupType != GroupType.None && this.m_groupType != gt) 
+            if (m_groupType != GroupType.None && m_groupType != gt) 
             {
                 throw new SgmlParseException(string.Format(CultureInfo.CurrentUICulture, "Connector '{0}' is inconsistent with {1} group.", c, m_groupType.ToString()));
             }
@@ -2265,7 +2262,7 @@ namespace Sgml {
     /// </summary>
     public class AttDef
     {
-        private string m_name;
+        private readonly string m_name;
         private AttributeType m_type;
         private string[] m_enumValues;
         private string m_default;
@@ -2475,12 +2472,12 @@ namespace Sgml {
     /// </summary>
     public class SgmlDtd
     {
-        private string m_name;
+        private readonly string m_name;
 
-        private Dictionary<string, ElementDecl> m_elements;
-        private Dictionary<string, Entity> m_pentities;
-        private Dictionary<string, Entity> m_entities;
-        private StringBuilder m_sb;
+        private readonly Dictionary<string, ElementDecl> m_elements;
+        private readonly Dictionary<string, Entity> m_pentities;
+        private readonly Dictionary<string, Entity> m_entities;
+        private readonly StringBuilder m_sb;
         private Entity m_current;
 
         /// <summary>
@@ -2488,13 +2485,14 @@ namespace Sgml {
         /// </summary>
         /// <param name="name">The name of the DTD.</param>
         /// <param name="nt">The <see cref="XmlNameTable"/> is NOT used.</param>
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Part of original code")]
         public SgmlDtd(string name, XmlNameTable nt)
         {
-            this.m_name = name;
-            this.m_elements = new Dictionary<string,ElementDecl>();
-            this.m_pentities = new Dictionary<string, Entity>();
-            this.m_entities = new Dictionary<string, Entity>();
-            this.m_sb = new StringBuilder();
+            m_name = name;
+            m_elements = new Dictionary<string,ElementDecl>();
+            m_pentities = new Dictionary<string, Entity>();
+            m_entities = new Dictionary<string, Entity>();
+            m_sb = new StringBuilder();
         }
 
         /// <summary>
@@ -2595,8 +2593,7 @@ namespace Sgml {
         /// <returns>The specified Entity from the DTD.</returns>
         public Entity FindEntity(string name)
         {
-            Entity e;
-            this.m_entities.TryGetValue(name, out e);
+            m_entities.TryGetValue(name, out Entity e);
             return e;
         }
 
@@ -2607,70 +2604,69 @@ namespace Sgml {
         /// <returns>The <see cref="ElementDecl"/> matching the specified name.</returns>
         public ElementDecl FindElement(string name)
         {
-            ElementDecl el;
-            m_elements.TryGetValue(name.ToUpperInvariant(), out el);
+            m_elements.TryGetValue(name.ToUpperInvariant(), out ElementDecl el);
             return el;
         }
 
         //-------------------------------- Parser -------------------------
         private void PushEntity(Uri baseUri, Entity e)
         {
-            e.Open(this.m_current, baseUri);
-            this.m_current = e;
-            this.m_current.ReadChar();
+            e.Open(m_current, baseUri);
+            m_current = e;
+            m_current.ReadChar();
         }
 
         private void PopEntity()
         {
-            if (this.m_current != null) this.m_current.Close();
-            if (this.m_current.Parent != null) 
+            if (m_current != null) m_current.Close();
+            if (m_current.Parent != null) 
             {
-                this.m_current = this.m_current.Parent;
+                m_current = m_current.Parent;
             } 
             else 
             {
-                this.m_current = null;
+                m_current = null;
             }
         }
 
         private void Parse()
         {
-            char ch = this.m_current.Lastchar;
+            char ch = m_current.Lastchar;
             while (true) 
             {
                 switch (ch) 
                 {
                     case Entity.EOF:
                         PopEntity();
-                        if (this.m_current == null)
+                        if (m_current == null)
                             return;
-                        ch = this.m_current.Lastchar;
+                        ch = m_current.Lastchar;
                         break;
                     case ' ':
                     case '\n':
                     case '\r':
                     case '\t':
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                         break;
                     case '<':
                         ParseMarkup();
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                         break;
                     case '%':
                         Entity e = ParseParameterEntity(SgmlDtd.WhiteSpace);
                         try 
                         {
-                            PushEntity(this.m_current.ResolvedUri, e);
+                            PushEntity(m_current.ResolvedUri, e);
                         } 
                         catch (Exception ex) 
                         {
                             // BUG: need an error log.
-                            Console.WriteLine(ex.Message + this.m_current.Context());
+                            Console.WriteLine(ex.Message + m_current.Context());
                         }
-                        ch = this.m_current.Lastchar;
+                        ch = m_current.Lastchar;
                         break;
                     default:
-                        this.m_current.Error("Unexpected character '{0}'", ch);
+                        m_current.Error("Unexpected character '{0}'", ch);
                         break;
                 }               
             }
@@ -2678,18 +2674,18 @@ namespace Sgml {
 
         void ParseMarkup()
         {
-            char ch = this.m_current.ReadChar();
+            char ch = m_current.ReadChar();
             if (ch != '!') 
             {
-                this.m_current.Error("Found '{0}', but expecing declaration starting with '<!'");
+                m_current.Error("Found '{0}', but expecing declaration starting with '<!'");
                 return;
             }
-            ch = this.m_current.ReadChar();
+            ch = m_current.ReadChar();
             if (ch == '-') 
             {
-                ch = this.m_current.ReadChar();
-                if (ch != '-') this.m_current.Error("Expecting comment '<!--' but found {0}", ch);
-                this.m_current.ScanToEnd(this.m_sb, "Comment", "-->");
+                ch = m_current.ReadChar();
+                if (ch != '-') m_current.Error("Expecting comment '<!--' but found {0}", ch);
+                m_current.ScanToEnd(m_sb, "Comment", "-->");
             } 
             else if (ch == '[') 
             {
@@ -2697,7 +2693,7 @@ namespace Sgml {
             }
             else 
             {
-                string token = this.m_current.ScanToken(this.m_sb, SgmlDtd.WhiteSpace, true);
+                string token = m_current.ScanToken(m_sb, SgmlDtd.WhiteSpace, true);
                 switch (token) 
                 {
                     case "ENTITY":
@@ -2710,7 +2706,7 @@ namespace Sgml {
                         ParseAttList();
                         break;
                     default:
-                        this.m_current.Error("Invalid declaration '<!{0}'.  Expecting 'ENTITY', 'ELEMENT' or 'ATTLIST'.", token);
+                        m_current.Error("Invalid declaration '<!{0}'.  Expecting 'ENTITY', 'ELEMENT' or 'ATTLIST'.", token);
                         break;
                 }
             }
@@ -2718,7 +2714,7 @@ namespace Sgml {
 
         char ParseDeclComments()
         {
-            char ch = this.m_current.Lastchar;
+            char ch = m_current.Lastchar;
             while (ch == '-') 
             {
                 ch = ParseDeclComment(true);
@@ -2729,16 +2725,16 @@ namespace Sgml {
         char ParseDeclComment(bool full)
         {
             // This method scans over a comment inside a markup declaration.
-            char ch = this.m_current.ReadChar();
-            if (full && ch != '-') this.m_current.Error("Expecting comment delimiter '--' but found {0}", ch);
-            this.m_current.ScanToEnd(this.m_sb, "Markup Comment", "--");
-            return this.m_current.SkipWhitespace();
+            char ch = m_current.ReadChar();
+            if (full && ch != '-') m_current.Error("Expecting comment delimiter '--' but found {0}", ch);
+            m_current.ScanToEnd(m_sb, "Markup Comment", "--");
+            return m_current.SkipWhitespace();
         }
 
         void ParseMarkedSection()
         {
             // <![^ name [ ... ]]>
-            this.m_current.ReadChar(); // move to next char.
+            m_current.ReadChar(); // move to next char.
             string name = ScanName("[");
             if (string.Equals(name, "INCLUDE", StringComparison.OrdinalIgnoreCase)) 
             {
@@ -2750,7 +2746,7 @@ namespace Sgml {
             }
             else 
             {
-                this.m_current.Error("Unsupported marked section type '{0}'", name);
+                m_current.Error("Unsupported marked section type '{0}'", name);
             }
         }
 
@@ -2763,47 +2759,46 @@ namespace Sgml {
 
         void ParseIgnoreSection()
         {
-            char ch = this.m_current.SkipWhitespace();
-            if (ch != '[') this.m_current.Error("Expecting '[' but found {0}", ch);
-            this.m_current.ScanToEnd(this.m_sb, "Conditional Section", "]]>");
+            char ch = m_current.SkipWhitespace();
+            if (ch != '[') m_current.Error("Expecting '[' but found {0}", ch);
+            m_current.ScanToEnd(m_sb, "Conditional Section", "]]>");
         }
 
         string ScanName(string term)
         {
             // skip whitespace, scan name (which may be parameter entity reference
             // which is then expanded to a name)
-            char ch = this.m_current.SkipWhitespace();
+            char ch = m_current.SkipWhitespace();
             if (ch == '%') 
             {
                 Entity e = ParseParameterEntity(term);
-                ch = this.m_current.Lastchar;
+                ch = m_current.Lastchar;
                 // bugbug - need to support external and nested parameter entities
                 if (!e.IsInternal) throw new NotSupportedException("External parameter entity resolution");
                 return e.Literal.Trim();
             } 
             else 
             {
-                return this.m_current.ScanToken(this.m_sb, term, true);
+                return m_current.ScanToken(m_sb, term, true);
             }
         }
 
         private Entity ParseParameterEntity(string term)
         {
             // almost the same as this.current.ScanToken, except we also terminate on ';'
-            this.m_current.ReadChar();
-            string name =  this.m_current.ScanToken(this.m_sb, ";"+term, false);
-            if (this.m_current.Lastchar == ';') 
-                this.m_current.ReadChar();
+            m_current.ReadChar();
+            string name =  m_current.ScanToken(m_sb, ";"+term, false);
+            if (m_current.Lastchar == ';') 
+                m_current.ReadChar();
             Entity e = GetParameterEntity(name);
             return e;
         }
 
         private Entity GetParameterEntity(string name)
         {
-            Entity e = null;
-            m_pentities.TryGetValue(name, out e);
+            m_pentities.TryGetValue(name, out Entity e);
             if (e == null)
-                this.m_current.Error("Reference to undefined parameter entity '{0}'", name);
+                m_current.Error("Reference to undefined parameter entity '{0}'", name);
 
             return e;
         }
@@ -2816,7 +2811,7 @@ namespace Sgml {
         public Dictionary<string, Entity> GetEntitiesLiteralNameLookup()
         {
             Dictionary<string, Entity> hashtable = new Dictionary<string, Entity>();
-            foreach (Entity entity in this.m_entities.Values)
+            foreach (Entity entity in m_entities.Values)
                 hashtable[entity.Literal] = entity;
 
             return hashtable;
@@ -2826,31 +2821,31 @@ namespace Sgml {
 
         private void ParseEntity()
         {
-            char ch = this.m_current.SkipWhitespace();
+            char ch = m_current.SkipWhitespace();
             bool pe = (ch == '%');
             if (pe)
             {
                 // parameter entity.
-                this.m_current.ReadChar(); // move to next char
-                ch = this.m_current.SkipWhitespace();
+                m_current.ReadChar(); // move to next char
+                ch = m_current.SkipWhitespace();
             }
-            string name = this.m_current.ScanToken(this.m_sb, SgmlDtd.WhiteSpace, true);
-            ch = this.m_current.SkipWhitespace();
+            string name = m_current.ScanToken(m_sb, SgmlDtd.WhiteSpace, true);
+            ch = m_current.SkipWhitespace();
             Entity e = null;
             if (ch == '"' || ch == '\'') 
             {
-                string literal = this.m_current.ScanLiteral(this.m_sb, ch);
+                string literal = m_current.ScanLiteral(m_sb, ch);
                 e = new Entity(name, literal);                
             } 
             else 
             {
                 string pubid = null;
                 string extid = null;
-                string tok = this.m_current.ScanToken(this.m_sb, SgmlDtd.WhiteSpace, true);
+                string tok = m_current.ScanToken(m_sb, SgmlDtd.WhiteSpace, true);
                 if (Entity.IsLiteralType(tok))
                 {
-                    ch = this.m_current.SkipWhitespace();
-                    string literal = this.m_current.ScanLiteral(this.m_sb, ch);
+                    ch = m_current.SkipWhitespace();
+                    string literal = m_current.ScanLiteral(m_sb, ch);
                     e = new Entity(name, literal);
                     e.SetLiteralType(tok);
                 }
@@ -2859,76 +2854,76 @@ namespace Sgml {
                     extid = tok;
                     if (string.Equals(extid, "PUBLIC", StringComparison.OrdinalIgnoreCase)) 
                     {
-                        ch = this.m_current.SkipWhitespace();
+                        ch = m_current.SkipWhitespace();
                         if (ch == '"' || ch == '\'') 
                         {
-                            pubid = this.m_current.ScanLiteral(this.m_sb, ch);
+                            pubid = m_current.ScanLiteral(m_sb, ch);
                         } 
                         else 
                         {
-                            this.m_current.Error("Expecting public identifier literal but found '{0}'",ch);
+                            m_current.Error("Expecting public identifier literal but found '{0}'",ch);
                         }
                     } 
                     else if (!string.Equals(extid, "SYSTEM", StringComparison.OrdinalIgnoreCase)) 
                     {
-                        this.m_current.Error("Invalid external identifier '{0}'.  Expecing 'PUBLIC' or 'SYSTEM'.", extid);
+                        m_current.Error("Invalid external identifier '{0}'.  Expecing 'PUBLIC' or 'SYSTEM'.", extid);
                     }
                     string uri = null;
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                     if (ch == '"' || ch == '\'') 
                     {
-                        uri = this.m_current.ScanLiteral(this.m_sb, ch);
+                        uri = m_current.ScanLiteral(m_sb, ch);
                     } 
                     else if (ch != '>')
                     {
-                        this.m_current.Error("Expecting system identifier literal but found '{0}'",ch);
+                        m_current.Error("Expecting system identifier literal but found '{0}'",ch);
                     }
-                    e = new Entity(name, pubid, uri, this.m_current.Proxy);
+                    e = new Entity(name, pubid, uri, m_current.Proxy);
                 }
             }
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
             if (ch == '-') 
                 ch = ParseDeclComments();
             if (ch != '>') 
             {
-                this.m_current.Error("Expecting end of entity declaration '>' but found '{0}'", ch);  
+                m_current.Error("Expecting end of entity declaration '>' but found '{0}'", ch);  
             }           
             if (pe)
-                this.m_pentities.Add(e.Name, e);
+                m_pentities.Add(e.Name, e);
             else
-                this.m_entities.Add(e.Name, e);
+                m_entities.Add(e.Name, e);
         }
 
         private void ParseElementDecl()
         {
-            char ch = this.m_current.SkipWhitespace();
+            char ch = m_current.SkipWhitespace();
             string[] names = ParseNameGroup(ch, true);
-            ch = char.ToUpperInvariant(this.m_current.SkipWhitespace());
+            ch = char.ToUpperInvariant(m_current.SkipWhitespace());
             bool sto = false;
             bool eto = false;
             if (ch == 'O' || ch == '-') {
                 sto = (ch == 'O'); // start tag optional?   
-                this.m_current.ReadChar();
-                ch = char.ToUpperInvariant(this.m_current.SkipWhitespace());
+                m_current.ReadChar();
+                ch = char.ToUpperInvariant(m_current.SkipWhitespace());
                 if (ch == 'O' || ch == '-'){
                     eto = (ch == 'O'); // end tag optional? 
-                    ch = this.m_current.ReadChar();
+                    ch = m_current.ReadChar();
                 }
             }
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
             ContentModel cm = ParseContentModel(ch);
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
 
             string [] exclusions = null;
             string [] inclusions = null;
 
             if (ch == '-') 
             {
-                ch = this.m_current.ReadChar();
+                ch = m_current.ReadChar();
                 if (ch == '(') 
                 {
                     exclusions = ParseNameGroup(ch, true);
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                 }
                 else if (ch == '-') 
                 {
@@ -2936,7 +2931,7 @@ namespace Sgml {
                 } 
                 else 
                 {
-                    this.m_current.Error("Invalid syntax at '{0}'", ch);  
+                    m_current.Error("Invalid syntax at '{0}'", ch);  
                 }
             }
 
@@ -2945,13 +2940,13 @@ namespace Sgml {
 
             if (ch == '+') 
             {
-                ch = this.m_current.ReadChar();
+                ch = m_current.ReadChar();
                 if (ch != '(') 
                 {
-                    this.m_current.Error("Expecting inclusions name group", ch);  
+                    m_current.Error("Expecting inclusions name group", ch);  
                 }
                 inclusions = ParseNameGroup(ch, true);
-                ch = this.m_current.SkipWhitespace();
+                ch = m_current.SkipWhitespace();
             }
 
             if (ch == '-') 
@@ -2960,51 +2955,51 @@ namespace Sgml {
 
             if (ch != '>') 
             {
-                this.m_current.Error("Expecting end of ELEMENT declaration '>' but found '{0}'", ch); 
+                m_current.Error("Expecting end of ELEMENT declaration '>' but found '{0}'", ch); 
             }
 
             foreach (string name in names) 
             {
                 string atom = name.ToUpperInvariant();
-                this.m_elements.Add(atom, new ElementDecl(atom, sto, eto, cm, inclusions, exclusions));
+                m_elements.Add(atom, new ElementDecl(atom, sto, eto, cm, inclusions, exclusions));
             }
         }
 
-        static string ngterm = " \r\n\t|,)";
+        static readonly string ngterm = " \r\n\t|,)";
         string[] ParseNameGroup(char ch, bool nmtokens)
         {
             ArrayList names = new ArrayList();
             if (ch == '(') 
             {
-                ch = this.m_current.ReadChar();
-                ch = this.m_current.SkipWhitespace();
+                ch = m_current.ReadChar();
+                ch = m_current.SkipWhitespace();
                 while (ch != ')') 
                 {
                     // skip whitespace, scan name (which may be parameter entity reference
                     // which is then expanded to a name)                    
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                     if (ch == '%') 
                     {
                         Entity e = ParseParameterEntity(SgmlDtd.ngterm);
-                        PushEntity(this.m_current.ResolvedUri, e);
+                        PushEntity(m_current.ResolvedUri, e);
                         ParseNameList(names, nmtokens);
                         PopEntity();
-                        ch = this.m_current.Lastchar;
+                        ch = m_current.Lastchar;
                     }
                     else 
                     {
-                        string token = this.m_current.ScanToken(this.m_sb, SgmlDtd.ngterm, nmtokens);
+                        string token = m_current.ScanToken(m_sb, SgmlDtd.ngterm, nmtokens);
                         token = token.ToUpperInvariant();
                         names.Add(token);
                     }
-                    ch = this.m_current.SkipWhitespace();
-                    if (ch == '|' || ch == ',') ch = this.m_current.ReadChar();
+                    ch = m_current.SkipWhitespace();
+                    if (ch == '|' || ch == ',') ch = m_current.ReadChar();
                 }
-                this.m_current.ReadChar(); // consume ')'
+                m_current.ReadChar(); // consume ')'
             } 
             else 
             {
-                string name = this.m_current.ScanToken(this.m_sb, SgmlDtd.WhiteSpace, nmtokens);
+                string name = m_current.ScanToken(m_sb, SgmlDtd.WhiteSpace, nmtokens);
                 name = name.ToUpperInvariant();
                 names.Add(name);
             }
@@ -3013,54 +3008,54 @@ namespace Sgml {
 
         void ParseNameList(ArrayList names, bool nmtokens)
         {
-            char ch = this.m_current.Lastchar;
-            ch = this.m_current.SkipWhitespace();
+            char ch = m_current.Lastchar;
+            ch = m_current.SkipWhitespace();
             while (ch != Entity.EOF) 
             {
                 string name;
                 if (ch == '%') 
                 {
                     Entity e = ParseParameterEntity(SgmlDtd.ngterm);
-                    PushEntity(this.m_current.ResolvedUri, e);
+                    PushEntity(m_current.ResolvedUri, e);
                     ParseNameList(names, nmtokens);
                     PopEntity();
-                    ch = this.m_current.Lastchar;
+                    ch = m_current.Lastchar;
                 } 
                 else 
                 {
-                    name = this.m_current.ScanToken(this.m_sb, SgmlDtd.ngterm, true);
+                    name = m_current.ScanToken(m_sb, SgmlDtd.ngterm, true);
                     name = name.ToUpperInvariant();
                     names.Add(name);
                 }
-                ch = this.m_current.SkipWhitespace();
+                ch = m_current.SkipWhitespace();
                 if (ch == '|') 
                 {
-                    ch = this.m_current.ReadChar();
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.ReadChar();
+                    ch = m_current.SkipWhitespace();
                 }
             }
         }
 
-        static string dcterm = " \r\n\t>";
+        static readonly string dcterm = " \r\n\t>";
         private ContentModel ParseContentModel(char ch)
         {
             ContentModel cm = new ContentModel();
             if (ch == '(') 
             {
-                this.m_current.ReadChar();
+                m_current.ReadChar();
                 ParseModel(')', cm);
-                ch = this.m_current.ReadChar();
+                ch = m_current.ReadChar();
                 if (ch == '?' || ch == '+' || ch == '*') 
                 {
                     cm.AddOccurrence(ch);
-                    this.m_current.ReadChar();
+                    m_current.ReadChar();
                 }
             } 
             else if (ch == '%') 
             {
                 Entity e = ParseParameterEntity(SgmlDtd.dcterm);
-                PushEntity(this.m_current.ResolvedUri, e);
-                cm = ParseContentModel(this.m_current.Lastchar);
+                PushEntity(m_current.ResolvedUri, e);
+                cm = ParseContentModel(m_current.Lastchar);
                 PopEntity(); // bugbug should be at EOF.
             }
             else
@@ -3071,81 +3066,81 @@ namespace Sgml {
             return cm;
         }
 
-        static string cmterm = " \r\n\t,&|()?+*";
+        static readonly string cmterm = " \r\n\t,&|()?+*";
         void ParseModel(char cmt, ContentModel cm)
         {
             // Called when part of the model is made up of the contents of a parameter entity
             int depth = cm.CurrentDepth;
-            char ch = this.m_current.Lastchar;
-            ch = this.m_current.SkipWhitespace();
+            char ch = m_current.Lastchar;
+            ch = m_current.SkipWhitespace();
             while (ch != cmt || cm.CurrentDepth > depth) // the entity must terminate while inside the content model.
             {
                 if (ch == Entity.EOF) 
                 {
-                    this.m_current.Error("Content Model was not closed");
+                    m_current.Error("Content Model was not closed");
                 }
                 if (ch == '%') 
                 {
                     Entity e = ParseParameterEntity(SgmlDtd.cmterm);
-                    PushEntity(this.m_current.ResolvedUri, e);
+                    PushEntity(m_current.ResolvedUri, e);
                     ParseModel(Entity.EOF, cm);
                     PopEntity();                    
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                 } 
                 else if (ch == '(') 
                 {
                     cm.PushGroup();
-                    this.m_current.ReadChar();// consume '('
-                    ch = this.m_current.SkipWhitespace();
+                    m_current.ReadChar();// consume '('
+                    ch = m_current.SkipWhitespace();
                 }
                 else if (ch == ')') 
                 {
-                    ch = this.m_current.ReadChar();// consume ')'
+                    ch = m_current.ReadChar();// consume ')'
                     if (ch == '*' || ch == '+' || ch == '?') 
                     {
                         cm.AddOccurrence(ch);
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                     }
                     if (cm.PopGroup() < depth)
                     {
-                        this.m_current.Error("Parameter entity cannot close a paren outside it's own scope");
+                        m_current.Error("Parameter entity cannot close a paren outside it's own scope");
                     }
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                 }
                 else if (ch == ',' || ch == '|' || ch == '&') 
                 {
                     cm.AddConnector(ch);
-                    this.m_current.ReadChar(); // skip connector
-                    ch = this.m_current.SkipWhitespace();
+                    m_current.ReadChar(); // skip connector
+                    ch = m_current.SkipWhitespace();
                 }
                 else
                 {
                     string token;
                     if (ch == '#') 
                     {
-                        ch = this.m_current.ReadChar();
-                        token = "#" + this.m_current.ScanToken(this.m_sb, SgmlDtd.cmterm, true); // since '#' is not a valid name character.
+                        ch = m_current.ReadChar();
+                        token = "#" + m_current.ScanToken(m_sb, SgmlDtd.cmterm, true); // since '#' is not a valid name character.
                     } 
                     else 
                     {
-                        token = this.m_current.ScanToken(this.m_sb, SgmlDtd.cmterm, true);
+                        token = m_current.ScanToken(m_sb, SgmlDtd.cmterm, true);
                     }
 
                     token = token.ToUpperInvariant();
-                    ch = this.m_current.Lastchar;
+                    ch = m_current.Lastchar;
                     if (ch == '?' || ch == '+' || ch == '*') 
                     {
                         cm.PushGroup();
                         cm.AddSymbol(token);
                         cm.AddOccurrence(ch);
                         cm.PopGroup();
-                        this.m_current.ReadChar(); // skip connector
-                        ch = this.m_current.SkipWhitespace();
+                        m_current.ReadChar(); // skip connector
+                        ch = m_current.SkipWhitespace();
                     } 
                     else 
                     {
                         cm.AddSymbol(token);
-                        ch = this.m_current.SkipWhitespace();
+                        ch = m_current.SkipWhitespace();
                     }                   
                 }
             }
@@ -3153,35 +3148,34 @@ namespace Sgml {
 
         void ParseAttList()
         {
-            char ch = this.m_current.SkipWhitespace();
+            char ch = m_current.SkipWhitespace();
             string[] names = ParseNameGroup(ch, true);          
             Dictionary<string, AttDef> attlist = new Dictionary<string, AttDef>();
             ParseAttList(attlist, '>');
             foreach (string name in names)
             {
-                ElementDecl e;
-                if (!m_elements.TryGetValue(name, out e)) 
+                if (!m_elements.TryGetValue(name, out ElementDecl e))
                 {
-                    this.m_current.Error("ATTLIST references undefined ELEMENT {0}", name);
+                    m_current.Error("ATTLIST references undefined ELEMENT {0}", name);
                 }
 
                 e.AddAttDefs(attlist);
             }
         }
 
-        static string peterm = " \t\r\n>";
+        static readonly string peterm = " \t\r\n>";
         void ParseAttList(Dictionary<string, AttDef> list, char term)
         {
-            char ch = this.m_current.SkipWhitespace();
+            char ch = m_current.SkipWhitespace();
             while (ch != term) 
             {
                 if (ch == '%') 
                 {
                     Entity e = ParseParameterEntity(SgmlDtd.peterm);
-                    PushEntity(this.m_current.ResolvedUri, e);
+                    PushEntity(m_current.ResolvedUri, e);
                     ParseAttList(list, Entity.EOF);
                     PopEntity();                    
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                 } 
                 else if (ch == '-') 
                 {
@@ -3192,30 +3186,31 @@ namespace Sgml {
                     AttDef a = ParseAttDef(ch);
                     list.Add(a.Name, a);
                 }
-                ch = this.m_current.SkipWhitespace();
+                ch = m_current.SkipWhitespace();
             }
         }
 
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Part of original code")]
         AttDef ParseAttDef(char ch)
         {
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
             string name = ScanName(SgmlDtd.WhiteSpace);
             name = name.ToUpperInvariant();
             AttDef attdef = new AttDef(name);
 
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
             if (ch == '-') 
                 ch = ParseDeclComments();               
 
             ParseAttType(ch, attdef);
 
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
             if (ch == '-') 
                 ch = ParseDeclComments();               
 
             ParseAttDefault(ch, attdef);
 
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
             if (ch == '-') 
                 ch = ParseDeclComments();               
 
@@ -3228,10 +3223,10 @@ namespace Sgml {
             if (ch == '%')
             {
                 Entity e = ParseParameterEntity(SgmlDtd.WhiteSpace);
-                PushEntity(this.m_current.ResolvedUri, e);
-                ParseAttType(this.m_current.Lastchar, attdef);
+                PushEntity(m_current.ResolvedUri, e);
+                ParseAttType(m_current.Lastchar, attdef);
                 PopEntity(); // bugbug - are we at the end of the entity?
-                ch = this.m_current.Lastchar;
+                ch = m_current.Lastchar;
                 return;
             }
 
@@ -3246,10 +3241,10 @@ namespace Sgml {
                 string token = ScanName(SgmlDtd.WhiteSpace);
                 if (string.Equals(token, "NOTATION", StringComparison.OrdinalIgnoreCase)) 
                 {
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                     if (ch != '(') 
                     {
-                        this.m_current.Error("Expecting name group '(', but found '{0}'", ch);
+                        m_current.Error("Expecting name group '(', but found '{0}'", ch);
                     }
                     //attdef.Type = AttributeType.NOTATION;
                     //attdef.EnumValues = ParseNameGroup(ch, true);
@@ -3267,35 +3262,35 @@ namespace Sgml {
             if (ch == '%')
             {
                 Entity e = ParseParameterEntity(SgmlDtd.WhiteSpace);
-                PushEntity(this.m_current.ResolvedUri, e);
-                ParseAttDefault(this.m_current.Lastchar, attdef);
+                PushEntity(m_current.ResolvedUri, e);
+                ParseAttDefault(m_current.Lastchar, attdef);
                 PopEntity(); // bugbug - are we at the end of the entity?
-                ch = this.m_current.Lastchar;
+                ch = m_current.Lastchar;
                 return;
             }
 
             bool hasdef = true;
             if (ch == '#') 
             {
-                this.m_current.ReadChar();
-                string token = this.m_current.ScanToken(this.m_sb, SgmlDtd.WhiteSpace, true);
+                m_current.ReadChar();
+                string token = m_current.ScanToken(m_sb, SgmlDtd.WhiteSpace, true);
                 hasdef = attdef.SetPresence(token);
-                ch = this.m_current.SkipWhitespace();
+                ch = m_current.SkipWhitespace();
             } 
             if (hasdef) 
             {
                 if (ch == '\'' || ch == '"') 
                 {
-                    string lit = this.m_current.ScanLiteral(this.m_sb, ch);
+                    string lit = m_current.ScanLiteral(m_sb, ch);
                     attdef.Default = lit;
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                 }
                 else
                 {
-                    string name = this.m_current.ScanToken(this.m_sb, SgmlDtd.WhiteSpace, false);
+                    string name = m_current.ScanToken(m_sb, SgmlDtd.WhiteSpace, false);
                     name = name.ToUpperInvariant();
                     attdef.Default = name; // bugbug - must be one of the enumerated names.
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                 }
             }
         }

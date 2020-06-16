@@ -40,14 +40,12 @@ namespace SGMLTests {
         }
 
         //--- Class Fields ---
-        private static ILog _log = LogManager.GetLogger(typeof(Tests));
-        private static bool _debug = true;
+        private static readonly ILog _log = LogManager.GetLogger(typeof(Tests));
+        private static readonly bool _debug = true;
 
         //--- Class Methods ---
         private static void Test(string name, XmlRender xmlRender, CaseFolding caseFolding, string doctype, bool format) {
-            string source;
-            string expected;
-            ReadTest(name, out source, out expected);
+            ReadTest(name, out string source, out string expected);
             expected = expected.Trim().Replace("\r", "");
             string actual;
 
@@ -58,7 +56,7 @@ namespace SGMLTests {
 
                 // test writing sgml reader using xml document load
                 callback = (reader, writer) => {
-                    var doc = new XmlDocument();
+                    XmlDocument doc = new XmlDocument();
                     doc.Load(reader);
                     doc.WriteTo(writer);
                 };
@@ -67,9 +65,9 @@ namespace SGMLTests {
 
                 // test writing sgml reader using xml document load and clone
                 callback = (reader, writer) => {
-                    var doc = new XmlDocument();
+                    XmlDocument doc = new XmlDocument();
                     doc.Load(reader);
-                    var clone = doc.Clone();
+                    XmlNode clone = doc.Clone();
                     clone.WriteTo(writer);
                 };
                 break;
@@ -91,13 +89,13 @@ namespace SGMLTests {
         }
 
         private static void ReadTest(string name, out string before, out string after) {
-            var assembly = typeof(Tests).Assembly;
-            var stream = assembly.GetManifestResourceStream(assembly.FullName.Split(',')[0] + ".Resources." + name);
+            System.Reflection.Assembly assembly = typeof(Tests).Assembly;
+            Stream stream = assembly.GetManifestResourceStream(assembly.FullName.Split(',')[0] + ".Resources." + name);
             if(stream == null) {
                 throw new FileNotFoundException("unable to load requested resource: " + name);
             }
-            using(var sr = new StreamReader(stream)) {
-                var test = sr.ReadToEnd().Split('`');
+            using(StreamReader sr = new StreamReader(stream)) {
+                string[] test = sr.ReadToEnd().Split('`');
                 before = test[0];
                 after = test[1];
             }
@@ -119,8 +117,8 @@ namespace SGMLTests {
             }
 
             // initialize xml writer
-            var stringWriter = new StringWriter();
-            var xmlTextWriter = new XmlTextWriter(stringWriter);
+            StringWriter stringWriter = new StringWriter();
+            XmlTextWriter xmlTextWriter = new XmlTextWriter(stringWriter);
             if(format) {
                 xmlTextWriter.Formatting = Formatting.Indented;
             }
@@ -128,12 +126,12 @@ namespace SGMLTests {
             xmlTextWriter.Close();
 
             // reproduce the parsed document
-            var actual = stringWriter.ToString();
+            string actual = stringWriter.ToString();
 
             // ensure that output can be parsed again
             try {
-                using(var stringReader = new StringReader(actual)) {
-                    var doc = new XmlDocument();
+                using(StringReader stringReader = new StringReader(actual)) {
+                    XmlDocument doc = new XmlDocument();
                     doc.Load(stringReader);
                 }
             } catch(Exception) {

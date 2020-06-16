@@ -157,13 +157,13 @@ namespace Sgml {
             }
 
 
-            if (this.encoding == null) {
-                this.encoding = reader.GetEncoding();
+            if (encoding == null) {
+                encoding = reader.GetEncoding();
             }
 
             XmlTextWriter w = null;
             if (output != null) {
-                w = new XmlTextWriter(output, this.encoding);          
+                w = new XmlTextWriter(output, encoding);          
             } 
             else {
                 w = new XmlTextWriter(Console.Out);

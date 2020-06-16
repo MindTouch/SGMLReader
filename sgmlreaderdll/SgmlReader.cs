@@ -76,7 +76,7 @@ namespace Sgml
         private object[] m_items;
         private int m_size;
         private int m_count;
-        private int m_growth;
+        private readonly int m_growth;
 
         /// <summary>
         /// Initialises a new instance of the HWStack class.
@@ -84,7 +84,7 @@ namespace Sgml
         /// <param name="growth">The amount to grow the stack space by, if more space is needed on the stack.</param>
         public HWStack(int growth)
         {
-            this.m_growth = growth;
+            m_growth = growth;
         }
 
         /// <summary>
@@ -94,11 +94,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_count;
+                return m_count;
             }
             set
             {
-                this.m_count = value;
+                m_count = value;
             }
         }
 
@@ -110,7 +110,7 @@ namespace Sgml
         {
             get
             {
-                return this.m_size;
+                return m_size;
             }
         }
 
@@ -123,11 +123,11 @@ namespace Sgml
         {
             get
             {
-                return (i >= 0 && i < this.m_size) ? m_items[i] : null;
+                return (i >= 0 && i < m_size) ? m_items[i] : null;
             }
             set
             {
-                this.m_items[i] = value;
+                m_items[i] = value;
             }
         }
 
@@ -137,10 +137,10 @@ namespace Sgml
         /// <returns>The item at the top of the stack.</returns>
         public object Pop()
         {
-            this.m_count--;
-            if (this.m_count > 0)
+            m_count--;
+            if (m_count > 0)
             {
-                return m_items[this.m_count - 1];
+                return m_items[m_count - 1];
             }
 
             return null;
@@ -156,17 +156,17 @@ namespace Sgml
         /// </remarks>
         public object Push()
         {
-            if (this.m_count == this.m_size)
+            if (m_count == m_size)
             {
-                int newsize = this.m_size + this.m_growth;
+                int newsize = m_size + m_growth;
                 object[] newarray = new object[newsize];
-                if (this.m_items != null)
-                    Array.Copy(this.m_items, newarray, this.m_size);
+                if (m_items != null)
+                    Array.Copy(m_items, newarray, m_size);
 
-                this.m_size = newsize;
-                this.m_items = newarray;
+                m_size = newsize;
+                m_items = newarray;
             }
-            return m_items[this.m_count++];
+            return m_items[m_count++];
         }
 
         /// <summary>
@@ -176,9 +176,9 @@ namespace Sgml
         [SuppressMessage("Microsoft.Performance", "CA1811", Justification = "Kept for potential future usage.")]
         public void RemoveAt(int i)
         {
-            this.m_items[i] = null;
-            Array.Copy(this.m_items, i + 1, this.m_items, i, this.m_count - i - 1);
-            this.m_count--;
+            m_items[i] = null;
+            Array.Copy(m_items, i + 1, m_items, i, m_count - i - 1);
+            m_count--;
         }
     }
 
@@ -199,20 +199,20 @@ namespace Sgml
         /// </summary>
         public void Reset(string name, string value, char quote)
         {
-            this.Name = name;
-            this.m_literalValue = value;
-            this.QuoteChar = quote;
-            this.DtdType = null;
+            Name = name;
+            m_literalValue = value;
+            QuoteChar = quote;
+            DtdType = null;
         }
 
         public string Value
         {
             get
             {
-                if (this.m_literalValue != null) 
-                    return this.m_literalValue;
-                if (this.DtdType != null) 
-                    return this.DtdType.Default;
+                if (m_literalValue != null) 
+                    return m_literalValue;
+                if (DtdType != null) 
+                    return DtdType.Default;
                 return null;
             }
 /*            set
@@ -225,7 +225,7 @@ namespace Sgml
         {
             get
             {
-                return (this.m_literalValue == null);
+                return (m_literalValue == null);
             }
         }
     }    
@@ -246,28 +246,28 @@ namespace Sgml
         internal ElementDecl DtdType; // the DTD type found via validation
         internal State CurrentState;
         internal bool Simulated; // tag was injected into result stream.
-        HWStack attributes = new HWStack(10);
+        readonly HWStack attributes = new HWStack(10);
 
         /// <summary>
         /// Attribute objects are reused during parsing to reduce memory allocations, 
         /// hence the Reset method. 
         /// </summary>
         public void Reset(string name, XmlNodeType nt, string value) {           
-            this.Value = value;
-            this.Name = name;
-            this.NodeType = nt;
-            this.Space = XmlSpace.None;
-            this.XmlLang= null;
-            this.IsEmpty = true;
-            this.attributes.Count = 0;
-            this.DtdType = null;
+            Value = value;
+            Name = name;
+            NodeType = nt;
+            Space = XmlSpace.None;
+            XmlLang= null;
+            IsEmpty = true;
+            attributes.Count = 0;
+            DtdType = null;
         }
 
         public Attribute AddAttribute(string name, string value, char quotechar, bool caseInsensitive) {
             Attribute a;
             // check for duplicates!
-            for (int i = 0, n = this.attributes.Count; i < n; i++) {
-                a = (Attribute)this.attributes[i];
+            for (int i = 0, n = attributes.Count; i < n; i++) {
+                a = (Attribute)attributes[i];
                 if (string.Equals(a.Name, name, caseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
                 {
                     return null;
@@ -275,10 +275,10 @@ namespace Sgml
             }
             // This code makes use of the high water mark for attribute objects,
             // and reuses exisint Attribute objects to avoid memory allocation.
-            a = (Attribute)this.attributes.Push();
+            a = (Attribute)attributes.Push();
             if (a == null) {
                 a = new Attribute();
-                this.attributes[this.attributes.Count-1] = a;
+                attributes[attributes.Count-1] = a;
             }
             a.Reset(name, value, quotechar);
             return a;
@@ -287,12 +287,12 @@ namespace Sgml
         [SuppressMessage("Microsoft.Performance", "CA1811", Justification = "Kept for potential future usage.")]
         public void RemoveAttribute(string name)
         {
-            for (int i = 0, n = this.attributes.Count; i < n; i++)
+            for (int i = 0, n = attributes.Count; i < n; i++)
             {
-                Attribute a  = (Attribute)this.attributes[i];
+                Attribute a  = (Attribute)attributes[i];
                 if (string.Equals(a.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
-                    this.attributes.RemoveAt(i);
+                    attributes.RemoveAt(i);
                     return;
                 }
             }
@@ -300,20 +300,20 @@ namespace Sgml
         public void CopyAttributes(Node n) {
             for (int i = 0, len = n.attributes.Count; i < len; i++) {
                 Attribute a = (Attribute)n.attributes[i];
-                Attribute na = this.AddAttribute(a.Name, a.Value, a.QuoteChar, false);
+                Attribute na = AddAttribute(a.Name, a.Value, a.QuoteChar, false);
                 na.DtdType = a.DtdType;
             }
         }
 
         public int AttributeCount {
             get {
-                return this.attributes.Count;
+                return attributes.Count;
             }
         }
 
         public int GetAttribute(string name) {
-            for (int i = 0, n = this.attributes.Count; i < n; i++) {
-                Attribute a = (Attribute)this.attributes[i];
+            for (int i = 0, n = attributes.Count; i < n; i++) {
+                Attribute a = (Attribute)attributes[i];
                 if (string.Equals(a.Name, name, StringComparison.OrdinalIgnoreCase)) {
                     return i;
                 }
@@ -322,8 +322,8 @@ namespace Sgml
         }
 
         public Attribute GetAttribute(int i) {
-            if (i>=0 && i<this.attributes.Count) {
-                Attribute a = (Attribute)this.attributes[i];
+            if (i>=0 && i<attributes.Count) {
+                Attribute a = (Attribute)attributes[i];
                 return a;
             }
             return null;
@@ -397,7 +397,7 @@ namespace Sgml
         private CaseFolding m_folding = CaseFolding.None;
         private bool m_stripDocType = true;
         //private string m_startTag;
-        private Dictionary<string, string> unknownNamespaces = new Dictionary<string,string>();
+        private readonly Dictionary<string, string> unknownNamespaces = new Dictionary<string,string>();
 
         /// <summary>
         /// Initialises a new instance of the SgmlReader class.
@@ -410,6 +410,7 @@ namespace Sgml
         /// Initialises a new instance of the SgmlReader class with an existing <see cref="XmlNameTable"/>, which is NOT used.
         /// </summary>
         /// <param name="nt">The nametable to use.</param>
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Part of original code")]
         public SgmlReader(XmlNameTable nt) {
             Init();
         }
@@ -422,26 +423,26 @@ namespace Sgml
         {
             get
             {
-                if (this.m_dtd == null)
+                if (m_dtd == null)
                 {
-                    LazyLoadDtd(this.m_baseUri);
+                    LazyLoadDtd(m_baseUri);
                 }
 
-                return this.m_dtd; 
+                return m_dtd; 
             }
             set
             {
-                this.m_dtd = value;
+                m_dtd = value;
             }
         }
 
         private void LazyLoadDtd(Uri baseUri)
         {
-            if (this.m_dtd == null && !this.m_ignoreDtd)
+            if (m_dtd == null && !m_ignoreDtd)
             {
-                if (string.IsNullOrEmpty(this.m_syslit))
+                if (string.IsNullOrEmpty(m_syslit))
                 {
-                    if (this.m_docType != null && StringUtilities.EqualsIgnoreCase(this.m_docType, "html"))
+                    if (m_docType != null && StringUtilities.EqualsIgnoreCase(m_docType, "html"))
                     {
                         Assembly a = typeof(SgmlReader).Assembly;
                         string name = a.FullName.Split(',')[0]+".Html.dtd";
@@ -449,7 +450,7 @@ namespace Sgml
                         if (stm != null)
                         {
                             StreamReader sr = new StreamReader(stm);
-                            this.m_dtd = SgmlDtd.Parse(baseUri, "HTML", sr, null, this.m_proxy, null);
+                            m_dtd = SgmlDtd.Parse(baseUri, "HTML", sr, null, m_proxy, null);
                         }
                     }
                 }
@@ -457,36 +458,36 @@ namespace Sgml
                 { 
                     if (baseUri != null)
                     {
-                        baseUri = new Uri(baseUri, this.m_syslit);
+                        baseUri = new Uri(baseUri, m_syslit);
                     }
-                    else if (this.m_baseUri != null)
+                    else if (m_baseUri != null)
                     {
-                        baseUri = new Uri(this.m_baseUri, this.m_syslit);
+                        baseUri = new Uri(m_baseUri, m_syslit);
                     }
                     else
                     {
-                        baseUri = new Uri(new Uri(Directory.GetCurrentDirectory() + "/"), this.m_syslit);
+                        baseUri = new Uri(new Uri(Directory.GetCurrentDirectory() + "/"), m_syslit);
                     }
-                    this.m_dtd = SgmlDtd.Parse(baseUri, this.m_docType, this.m_pubid, baseUri.AbsoluteUri, this.m_subset, this.m_proxy, null);
+                    m_dtd = SgmlDtd.Parse(baseUri, m_docType, m_pubid, baseUri.AbsoluteUri, m_subset, m_proxy, null);
                 }
             }
 
-            if (this.m_dtd != null && this.m_dtd.Name != null)
+            if (m_dtd != null && m_dtd.Name != null)
             {
-                switch(this.CaseFolding)
+                switch(CaseFolding)
                 {
                 case CaseFolding.ToUpper:
-                    this.m_rootElementName = this.m_dtd.Name.ToUpperInvariant();
+                    m_rootElementName = m_dtd.Name.ToUpperInvariant();
                     break;
                 case CaseFolding.ToLower:
-                    this.m_rootElementName = this.m_dtd.Name.ToLowerInvariant();
+                    m_rootElementName = m_dtd.Name.ToLowerInvariant();
                     break;
                 default:
-                    this.m_rootElementName = this.m_dtd.Name;
+                    m_rootElementName = m_dtd.Name;
                     break;
                 }
 
-                this.m_isHtml = StringUtilities.EqualsIgnoreCase(this.m_dtd.Name, "html");
+                m_isHtml = StringUtilities.EqualsIgnoreCase(m_dtd.Name, "html");
             }
         }
 
@@ -497,11 +498,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_docType;
+                return m_docType;
             }
             set
             {
-                this.m_docType = value;
+                m_docType = value;
             }
         }
 
@@ -523,11 +524,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_pubid;
+                return m_pubid;
             }
             set
             {
-                this.m_pubid = value;
+                m_pubid = value;
             }
         }
 
@@ -538,11 +539,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_syslit;
+                return m_syslit;
             }
             set
             {
-                this.m_syslit = value;
+                m_syslit = value;
             }
         }
 
@@ -553,11 +554,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_subset;
+                return m_subset;
             }
             set
             {
-                this.m_subset = value;
+                m_subset = value;
             }
         }
 
@@ -569,11 +570,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_inputStream;
+                return m_inputStream;
             }
             set
             {
-                this.m_inputStream = value;
+                m_inputStream = value;
                 Init();
             }
         }
@@ -586,11 +587,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_proxy;
+                return m_proxy;
             }
             set
             {
-                this.m_proxy = value;
+                m_proxy = value;
             }
         }
 
@@ -601,7 +602,7 @@ namespace Sgml
         /// </summary>
         public void SetBaseUri(string uri)
         {
-            this.m_baseUri = new Uri(uri);
+            m_baseUri = new Uri(uri);
         }
 
         /// <summary>
@@ -611,21 +612,21 @@ namespace Sgml
         {
             get
             {
-                return this.m_href;
+                return m_href;
             }
             set
             {
-                this.m_href = value; 
+                m_href = value; 
                 Init();
-                if (this.m_baseUri == null)
+                if (m_baseUri == null)
                 {
-                    if (this.m_href.IndexOf("://") > 0)
+                    if (m_href.IndexOf("://") > 0)
                     {
-                        this.m_baseUri = new Uri(this.m_href);
+                        m_baseUri = new Uri(m_href);
                     }
                     else
                     {
-                        this.m_baseUri = new Uri("file:///" + Directory.GetCurrentDirectory() + "//");
+                        m_baseUri = new Uri("file:///" + Directory.GetCurrentDirectory() + "//");
                     }
                 }
             }
@@ -638,11 +639,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_stripDocType;
+                return m_stripDocType;
             }
             set
             {
-                this.m_stripDocType = value;
+                m_stripDocType = value;
             }
         }
 
@@ -663,11 +664,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_folding;
+                return m_folding;
             }
             set
             {
-                this.m_folding = value;
+                m_folding = value;
             }
         }
 
@@ -678,11 +679,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_log;
+                return m_log;
             }
             set
             {
-                this.m_log = value;
+                m_log = value;
             }
         }
 
@@ -693,12 +694,12 @@ namespace Sgml
         {
             get
             {
-                return this.m_errorLogFile;
+                return m_errorLogFile;
             }
             set
             {
-                this.m_errorLogFile = value;
-                this.m_log = new StreamWriter(value);
+                m_errorLogFile = value;
+                m_log = new StreamWriter(value);
             }
         }
 
@@ -707,21 +708,21 @@ namespace Sgml
             if (ErrorLog != null)
             {
                 string err = string.Format(CultureInfo.CurrentUICulture, msg, args);
-                if (this.m_lastError != this.m_current)
+                if (m_lastError != m_current)
                 {
-                    err = err + "    " + this.m_current.Context();
-                    this.m_lastError = this.m_current;
+                    err = err + "    " + m_current.Context();
+                    m_lastError = m_current;
                     ErrorLog.WriteLine("### Error:" + err);
                 }
                 else
                 {
                     string path = "";
-                    if (this.m_current.ResolvedUri != null)
+                    if (m_current.ResolvedUri != null)
                     {
-                        path = this.m_current.ResolvedUri.AbsolutePath;
+                        path = m_current.ResolvedUri.AbsolutePath;
                     }
 
-                    ErrorLog.WriteLine("### Error in {0}#{1}, line {2}, position {3}: {4}", path, this.m_current.Name, this.m_current.Line, this.m_current.LinePosition, err);
+                    ErrorLog.WriteLine("### Error in {0}#{1}, line {2}, position {3}: {4}", path, m_current.Name, m_current.Line, m_current.LinePosition, err);
                 }
             }
         }
@@ -733,46 +734,46 @@ namespace Sgml
 
         private void Init()
         {
-            this.m_state = State.Initial;
-            this.m_stack = new HWStack(10);
-            this.m_node = Push(null, XmlNodeType.Document, null);
-            this.m_node.IsEmpty = false;
-            this.m_sb = new StringBuilder();
-            this.m_name = new StringBuilder();
-            this.m_poptodepth = 0;
-            this.m_current = null;
-            this.m_partial = '\0';
-            this.m_endTag = null;
-            this.m_a = null;
-            this.m_apos = 0;
-            this.m_newnode = null;
-            this.m_rootCount = 0;
-            this.m_foundRoot = false;
-            this.unknownNamespaces.Clear();
+            m_state = State.Initial;
+            m_stack = new HWStack(10);
+            m_node = Push(null, XmlNodeType.Document, null);
+            m_node.IsEmpty = false;
+            m_sb = new StringBuilder();
+            m_name = new StringBuilder();
+            m_poptodepth = 0;
+            m_current = null;
+            m_partial = '\0';
+            m_endTag = null;
+            m_a = null;
+            m_apos = 0;
+            m_newnode = null;
+            m_rootCount = 0;
+            m_foundRoot = false;
+            unknownNamespaces.Clear();
         }
 
         private Node Push(string name, XmlNodeType nt, string value)
         {
-            Node result = (Node)this.m_stack.Push();
+            Node result = (Node)m_stack.Push();
             if (result == null)
             {
                 result = new Node();
-                this.m_stack[this.m_stack.Count - 1] = result;
+                m_stack[m_stack.Count - 1] = result;
             }
 
             result.Reset(name, nt, value);
-            this.m_node = result;
+            m_node = result;
             return result;
         }
 
         private void SwapTopNodes()
         {
-            int top = this.m_stack.Count - 1;
+            int top = m_stack.Count - 1;
             if (top > 0)
             {
-                Node n = (Node)this.m_stack[top - 1];
-                this.m_stack[top - 1] = this.m_stack[top];
-                this.m_stack[top] = n;
+                Node n = (Node)m_stack[top - 1];
+                m_stack[top - 1] = m_stack[top];
+                m_stack[top] = n;
             }
         }
 
@@ -787,24 +788,24 @@ namespace Sgml
             n2.XmlLang = n.XmlLang;
             n2.CurrentState = n.CurrentState;
             n2.CopyAttributes(n);
-            this.m_node = n2;
+            m_node = n2;
             return n2;
         }
 
         private void Pop()
         {
-            if (this.m_stack.Count > 1)
+            if (m_stack.Count > 1)
             {
-                this.m_node = (Node)this.m_stack.Pop();
+                m_node = (Node)m_stack.Pop();
             }
         }
 
         private Node Top()
         {
-            int top = this.m_stack.Count - 1;
+            int top = m_stack.Count - 1;
             if (top > 0)
             {
-                return (Node)this.m_stack[top];
+                return (Node)m_stack[top];
             }
 
             return null;
@@ -817,20 +818,20 @@ namespace Sgml
         {
             get
             {
-                if (this.m_state == State.Attr)
+                if (m_state == State.Attr)
                 {
                     return XmlNodeType.Attribute;
                 }
-                else if (this.m_state == State.AttrValue)
+                else if (m_state == State.AttrValue)
                 {
                     return XmlNodeType.Text;
                 }
-                else if (this.m_state == State.EndTag || this.m_state == State.AutoClose)
+                else if (m_state == State.EndTag || m_state == State.AutoClose)
                 {
                     return XmlNodeType.EndElement;
                 }
 
-                return this.m_node.NodeType;
+                return m_node.NodeType;
             }
         }
 
@@ -842,13 +843,13 @@ namespace Sgml
             get
             {
                 string result = null;
-                if (this.m_state == State.Attr)
+                if (m_state == State.Attr)
                 {
-                    result = XmlConvert.EncodeName(this.m_a.Name);
+                    result = XmlConvert.EncodeName(m_a.Name);
                 }
-                else if (this.m_state != State.AttrValue)
+                else if (m_state != State.AttrValue)
                 {
-                    result = this.m_node.Name;
+                    result = m_node.Name;
                 }
 
                 return result;
@@ -887,7 +888,7 @@ namespace Sgml
             get
             {
                 // SGML has no namespaces, unless this turned out to be an xmlns attribute.
-                if (this.m_state == State.Attr && string.Equals(this.m_a.Name, "xmlns", StringComparison.OrdinalIgnoreCase))
+                if (m_state == State.Attr && string.Equals(m_a.Name, "xmlns", StringComparison.OrdinalIgnoreCase))
                 {
                     return "http://www.w3.org/2000/xmlns/";
                 }
@@ -909,9 +910,9 @@ namespace Sgml
                     else if (NodeType == XmlNodeType.Element)
                     {
                         // check if a 'xmlns:prefix' attribute is defined
-                        for (int i = this.m_stack.Count - 1; i > 0; --i)
+                        for (int i = m_stack.Count - 1; i > 0; --i)
                         {
-                            Node node = this.m_stack[i] as Node;
+                            Node node = m_stack[i] as Node;
                             if ((node != null) && (node.NodeType == XmlNodeType.Element))
                             {
                                 int index = node.GetAttribute("xmlns");
@@ -934,8 +935,8 @@ namespace Sgml
 
                             // check if a 'xmlns:prefix' attribute is defined
                             string key = "xmlns:" + prefix;
-                            for(int i = this.m_stack.Count - 1; i > 0; --i) {
-                                Node node = this.m_stack[i] as Node;
+                            for(int i = m_stack.Count - 1; i > 0; --i) {
+                                Node node = m_stack[i] as Node;
                                 if((node != null) && (node.NodeType == XmlNodeType.Element)) {
                                     int index = node.GetAttribute(key);
                                     if(index >= 0) {
@@ -991,12 +992,12 @@ namespace Sgml
         { 
             get
             {
-                if (this.m_state == State.Attr || this.m_state == State.AttrValue)
+                if (m_state == State.Attr || m_state == State.AttrValue)
                 {
                     return true;
                 }
 
-                return (this.m_node.Value != null);
+                return (m_node.Value != null);
             }
         }
 
@@ -1007,12 +1008,12 @@ namespace Sgml
         {
             get
             {
-                if (this.m_state == State.Attr || this.m_state == State.AttrValue)
+                if (m_state == State.Attr || m_state == State.AttrValue)
                 {
-                    return this.m_a.Value;
+                    return m_a.Value;
                 }
 
-                return this.m_node.Value;
+                return m_node.Value;
             }
         }
 
@@ -1024,16 +1025,16 @@ namespace Sgml
         { 
             get
             {
-                if (this.m_state == State.Attr)
+                if (m_state == State.Attr)
                 {
-                    return this.m_stack.Count;
+                    return m_stack.Count;
                 }
-                else if (this.m_state == State.AttrValue)
+                else if (m_state == State.AttrValue)
                 {
-                    return this.m_stack.Count + 1;
+                    return m_stack.Count + 1;
                 }
 
-                return this.m_stack.Count - 1;
+                return m_stack.Count - 1;
             }
         }
 
@@ -1045,7 +1046,7 @@ namespace Sgml
         {
             get
             {
-                return this.m_baseUri == null ? "" : this.m_baseUri.AbsoluteUri;
+                return m_baseUri == null ? "" : m_baseUri.AbsoluteUri;
             }
         }
 
@@ -1056,9 +1057,9 @@ namespace Sgml
         {
             get
             {
-                if (this.m_state == State.Markup || this.m_state == State.Attr || this.m_state == State.AttrValue)
+                if (m_state == State.Markup || m_state == State.Attr || m_state == State.AttrValue)
                 {
-                    return this.m_node.IsEmpty;
+                    return m_node.IsEmpty;
                 }
 
                 return false;
@@ -1076,8 +1077,8 @@ namespace Sgml
         {
             get
             {
-                if (this.m_state == State.Attr || this.m_state == State.AttrValue)
-                    return this.m_a.IsDefault;
+                if (m_state == State.Attr || m_state == State.AttrValue)
+                    return m_a.IsDefault;
 
                 return false;
             }
@@ -1094,8 +1095,8 @@ namespace Sgml
         {
             get
             {
-                if (this.m_a != null)
-                    return this.m_a.QuoteChar;
+                if (m_a != null)
+                    return m_a.QuoteChar;
 
                 return '\0';
             }
@@ -1109,9 +1110,9 @@ namespace Sgml
         {
             get
             {
-                for (int i = this.m_stack.Count - 1; i > 1; i--)
+                for (int i = m_stack.Count - 1; i > 1; i--)
                 {
-                    Node n = (Node)this.m_stack[i];
+                    Node n = (Node)m_stack[i];
                     XmlSpace xs = n.Space;
                     if (xs != XmlSpace.None)
                         return xs;
@@ -1129,9 +1130,9 @@ namespace Sgml
         {
             get
             {
-                for (int i = this.m_stack.Count - 1; i > 1; i--)
+                for (int i = m_stack.Count - 1; i > 1; i--)
                 {
-                    Node n = (Node)this.m_stack[i];
+                    Node n = (Node)m_stack[i];
                     string xmllang = n.XmlLang;
                     if (xmllang != null)
                         return xmllang;
@@ -1148,11 +1149,11 @@ namespace Sgml
         {
             get
             {
-                return this.m_whitespaceHandling;
+                return m_whitespaceHandling;
             } 
             set
             {
-                this.m_whitespaceHandling = value;
+                m_whitespaceHandling = value;
             }
         }
 
@@ -1164,11 +1165,11 @@ namespace Sgml
         {
             get
             {
-                if (this.m_state == State.Attr || this.m_state == State.AttrValue)
+                if (m_state == State.Attr || m_state == State.AttrValue)
                     //For compatibility with mono
-                    return this.m_node.AttributeCount;
-                else if (this.m_node.NodeType == XmlNodeType.Element || this.m_node.NodeType == XmlNodeType.DocumentType)
-                    return this.m_node.AttributeCount;
+                    return m_node.AttributeCount;
+                else if (m_node.NodeType == XmlNodeType.Element || m_node.NodeType == XmlNodeType.DocumentType)
+                    return m_node.AttributeCount;
                 else
                     return 0;
             }
@@ -1181,9 +1182,9 @@ namespace Sgml
         /// <returns>The value of the specified attribute. If the attribute is not found, a null reference (Nothing in Visual Basic) is returned. </returns>
         public override string GetAttribute(string name)
         {
-            if (this.m_state != State.Attr && this.m_state != State.AttrValue)
+            if (m_state != State.Attr && m_state != State.AttrValue)
             {
-                int i = this.m_node.GetAttribute(name);
+                int i = m_node.GetAttribute(name);
                 if (i >= 0)
                     return GetAttribute(i);
             }
@@ -1209,9 +1210,9 @@ namespace Sgml
         /// <returns>The value of the specified attribute. This method does not move the reader.</returns>
         public override string GetAttribute(int i)
         {
-            if (this.m_state != State.Attr && this.m_state != State.AttrValue)
+            if (m_state != State.Attr && m_state != State.AttrValue)
             {
-                Attribute a = this.m_node.GetAttribute(i);
+                Attribute a = m_node.GetAttribute(i);
                 if (a != null)
                     return a.Value;
             }
@@ -1267,7 +1268,7 @@ namespace Sgml
         /// <returns>true if the attribute is found; otherwise, false. If false, the reader's position does not change.</returns>
         public override bool MoveToAttribute(string name)
         {
-            int i = this.m_node.GetAttribute(name);
+            int i = m_node.GetAttribute(name);
             if (i >= 0)
             {
                 MoveToAttribute(i);
@@ -1294,18 +1295,18 @@ namespace Sgml
         /// <param name="i">The index of the attribute to move to.</param>
         public override void MoveToAttribute(int i)
         {
-            Attribute a = this.m_node.GetAttribute(i);
+            Attribute a = m_node.GetAttribute(i);
             if (a != null)
             {
-                this.m_apos = i;
-                this.m_a = a; 
+                m_apos = i;
+                m_a = a; 
                 //Make sure that AttrValue does not overwrite the preserved value
-                if (this.m_state != State.Attr && this.m_state != State.AttrValue)
+                if (m_state != State.Attr && m_state != State.AttrValue)
                 {
-                    this.m_node.CurrentState = this.m_state; //save current state.
+                    m_node.CurrentState = m_state; //save current state.
                 }
 
-                this.m_state = State.Attr;
+                m_state = State.Attr;
                 return;
             }
 
@@ -1318,7 +1319,7 @@ namespace Sgml
         /// <returns></returns>
         public override bool MoveToFirstAttribute()
         {
-            if (this.m_node.AttributeCount > 0)
+            if (m_node.AttributeCount > 0)
             {
                 MoveToAttribute(0);
                 return true;
@@ -1337,13 +1338,13 @@ namespace Sgml
         /// </remarks>
         public override bool MoveToNextAttribute()
         {
-            if (this.m_state != State.Attr && this.m_state != State.AttrValue)
+            if (m_state != State.Attr && m_state != State.AttrValue)
             {
                 return MoveToFirstAttribute();
             }
-            else if (this.m_apos < this.m_node.AttributeCount - 1)
+            else if (m_apos < m_node.AttributeCount - 1)
             {
-                MoveToAttribute(this.m_apos + 1);
+                MoveToAttribute(m_apos + 1);
                 return true;
             }
             else
@@ -1359,14 +1360,14 @@ namespace Sgml
         /// </returns>
         public override bool MoveToElement()
         {
-            if (this.m_state == State.Attr || this.m_state == State.AttrValue)
+            if (m_state == State.Attr || m_state == State.AttrValue)
             {
-                this.m_state = this.m_node.CurrentState;
-                this.m_a = null;
+                m_state = m_node.CurrentState;
+                m_a = null;
                 return true;
             }
             else
-                return (this.m_node.NodeType == XmlNodeType.Element);
+                return (m_node.NodeType == XmlNodeType.Element);
         }
 
         /// <summary>
@@ -1376,7 +1377,7 @@ namespace Sgml
         {
             get
             {
-                return this.m_isHtml;
+                return m_isHtml;
             }
         }
 
@@ -1387,40 +1388,40 @@ namespace Sgml
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024", Justification = "This method to get the encoding does not simply read a value, but potentially causes significant processing of the input stream.")]
         public Encoding GetEncoding()
         {
-            if (this.m_current == null)
+            if (m_current == null)
             {
                 OpenInput();
             }
 
-            return this.m_current.Encoding;
+            return m_current.Encoding;
         }
 
         private void OpenInput()
         {
-            LazyLoadDtd(this.m_baseUri);
+            LazyLoadDtd(m_baseUri);
 
-            if (this.Href != null)
+            if (Href != null)
             {
-                this.m_current = new Entity("#document", null, this.m_href, this.m_proxy);
+                m_current = new Entity("#document", null, m_href, m_proxy);
             }
-            else if (this.m_inputStream != null)
+            else if (m_inputStream != null)
             {
-                this.m_current = new Entity("#document", null, this.m_inputStream, this.m_proxy);           
+                m_current = new Entity("#document", null, m_inputStream, m_proxy);           
             }
             else
             {
                 throw new InvalidOperationException("You must specify input either via Href or InputStream properties");
             }
 
-            this.m_current.IsHtml = this.IsHtml;
-            this.m_current.Open(null, this.m_baseUri);
-            if (this.m_current.ResolvedUri != null)
-                this.m_baseUri = this.m_current.ResolvedUri;
+            m_current.IsHtml = IsHtml;
+            m_current.Open(null, m_baseUri);
+            if (m_current.ResolvedUri != null)
+                m_baseUri = m_current.ResolvedUri;
 
-            if (this.m_current.IsHtml && this.m_dtd == null)
+            if (m_current.IsHtml && m_dtd == null)
             {
-                this.m_docType = "HTML";
-                LazyLoadDtd(this.m_baseUri);
+                m_docType = "HTML";
+                LazyLoadDtd(m_baseUri);
             }
         }
 
@@ -1439,25 +1440,25 @@ namespace Sgml
             {
                 // return the next node
                 m_node.Simulated = false;
-                this.m_node = Top();
-                this.m_state = this.m_node.CurrentState;
+                m_node = Top();
+                m_state = m_node.CurrentState;
                 return true;
             }
 
             bool foundnode = false;
             while (!foundnode)
             {
-                switch (this.m_state)
+                switch (m_state)
                 {
                     case State.Initial:
-                        this.m_state = State.Markup;
-                        this.m_current.ReadChar();
+                        m_state = State.Markup;
+                        m_current.ReadChar();
                         goto case State.Markup;
                     case State.Eof:
-                        if (this.m_current.Parent != null)
+                        if (m_current.Parent != null)
                         {
-                            this.m_current.Close();
-                            this.m_current = this.m_current.Parent;
+                            m_current.Close();
+                            m_current = m_current.Parent;
                         }
                         else
                         {                           
@@ -1465,17 +1466,17 @@ namespace Sgml
                         }
                         break;
                     case State.EndTag:
-                        if (string.Equals(this.m_endTag, this.m_node.Name, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(m_endTag, m_node.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             Pop(); // we're done!
-                            this.m_state = State.Markup;
+                            m_state = State.Markup;
                             goto case State.Markup;
                         }                     
                         Pop(); // close one element
                         foundnode = true;// return another end element.
                         break;
                     case State.Markup:
-                        if (this.m_node.IsEmpty)
+                        if (m_node.IsEmpty)
                         {
                             Pop();
                         }
@@ -1483,26 +1484,26 @@ namespace Sgml
                         break;
                     case State.PartialTag:
                         Pop(); // remove text node.
-                        this.m_state = State.Markup;
-                        foundnode = ParseTag(this.m_partial);
+                        m_state = State.Markup;
+                        foundnode = ParseTag(m_partial);
                         break;
                     case State.PseudoStartTag:
                         foundnode = ParseStartTag('<');                        
                         break;
                     case State.AutoClose:
                         Pop(); // close next node.
-                        if (this.m_stack.Count <= this.m_poptodepth)
+                        if (m_stack.Count <= m_poptodepth)
                         {
-                            this.m_state = State.Markup;
-                            if (this.m_newnode != null)
+                            m_state = State.Markup;
+                            if (m_newnode != null)
                             {
-                                Push(this.m_newnode); // now we're ready to start the new node.
-                                this.m_newnode = null;
-                                this.m_state = State.Markup;
+                                Push(m_newnode); // now we're ready to start the new node.
+                                m_newnode = null;
+                                m_state = State.Markup;
                             }
-                            else if (this.m_node.NodeType == XmlNodeType.Document)
+                            else if (m_node.NodeType == XmlNodeType.Document)
                             {
-                                this.m_state = State.Eof;
+                                m_state = State.Eof;
                                 goto case State.Eof;
                             }
                         } 
@@ -1514,50 +1515,50 @@ namespace Sgml
                     case State.Attr:
                         goto case State.AttrValue;
                     case State.AttrValue:
-                        this.m_state = State.Markup;
+                        m_state = State.Markup;
                         goto case State.Markup;
                     case State.Text:
                         Pop();
                         goto case State.Markup;
                     case State.PartialText:
-                        if (ParseText(this.m_current.Lastchar, false))
+                        if (ParseText(m_current.Lastchar, false))
                         {
-                            this.m_node.NodeType = XmlNodeType.Whitespace;
+                            m_node.NodeType = XmlNodeType.Whitespace;
                         }
 
                         foundnode = true;
                         break;
                 }
 
-                if (foundnode && this.m_node.NodeType == XmlNodeType.Whitespace && this.m_whitespaceHandling == WhitespaceHandling.None)
+                if (foundnode && m_node.NodeType == XmlNodeType.Whitespace && m_whitespaceHandling == WhitespaceHandling.None)
                 {
                     // strip out whitespace (caller is probably pretty printing the XML).
                     foundnode = false;
                 }
-                if (!foundnode && this.m_state == State.Eof && this.m_stack.Count > 1)
+                if (!foundnode && m_state == State.Eof && m_stack.Count > 1)
                 {
-                    this.m_poptodepth = 1;
-                    this.m_state = State.AutoClose;
-                    this.m_node = Top();
+                    m_poptodepth = 1;
+                    m_state = State.AutoClose;
+                    m_node = Top();
                     return true;
                 }
             }
-            if (!m_foundRoot && (this.NodeType == XmlNodeType.Element ||
-                    this.NodeType == XmlNodeType.Text ||
-                    this.NodeType == XmlNodeType.CDATA))
+            if (!m_foundRoot && (NodeType == XmlNodeType.Element ||
+                    NodeType == XmlNodeType.Text ||
+                    NodeType == XmlNodeType.CDATA))
             {
                 m_foundRoot = true;
-                if (this.IsHtml && (this.NodeType != XmlNodeType.Element ||
-                    !string.Equals(this.LocalName, "html", StringComparison.OrdinalIgnoreCase)))
+                if (IsHtml && (NodeType != XmlNodeType.Element ||
+                    !string.Equals(LocalName, "html", StringComparison.OrdinalIgnoreCase)))
                 {
                     // Simulate an HTML root element!
-                    this.m_node.CurrentState = this.m_state;
+                    m_node.CurrentState = m_state;
                     Node root = Push("html", XmlNodeType.Element, null);
                     SwapTopNodes(); // make html the outer element.
-                    this.m_node = root;
+                    m_node = root;
                     root.Simulated = true;
                     root.IsEmpty = false;
-                    this.m_state = State.Markup;
+                    m_state = State.Markup;
                     //this.state = State.PseudoStartTag;
                     //this.startTag = name;
                 }
@@ -1570,30 +1571,30 @@ namespace Sgml
 
         private bool ParseMarkup()
         {
-            char ch = this.m_current.Lastchar;
+            char ch = m_current.Lastchar;
             if (ch == '<')
             {
-                ch = this.m_current.ReadChar();
+                ch = m_current.ReadChar();
                 return ParseTag(ch);
             } 
             else if (ch != Entity.EOF)
             {
-                if (this.m_node.DtdType != null && this.m_node.DtdType.ContentModel.DeclaredContent == DeclaredContent.CDATA)
+                if (m_node.DtdType != null && m_node.DtdType.ContentModel.DeclaredContent == DeclaredContent.CDATA)
                 {
                     // e.g. SCRIPT or STYLE tags which contain unparsed character data.
-                    this.m_partial = '\0';
-                    this.m_state = State.CData;
+                    m_partial = '\0';
+                    m_state = State.CData;
                     return false;
                 }
                 else if (ParseText(ch, true))
                 {
-                    this.m_node.NodeType = XmlNodeType.Whitespace;
+                    m_node.NodeType = XmlNodeType.Whitespace;
                 }
 
                 return true;
             }
 
-            this.m_state = State.Eof;
+            m_state = State.Eof;
             return false;
         }
 
@@ -1606,7 +1607,7 @@ namespace Sgml
             }
             else if (ch == '!')
             {
-                ch = this.m_current.ReadChar();
+                ch = m_current.ReadChar();
                 if (ch == '-')
                 {
                     return ParseComment();
@@ -1618,22 +1619,22 @@ namespace Sgml
                 else if (ch != '_' && !char.IsLetter(ch))
                 {
                     // perhaps it's one of those nasty office document hacks like '<![if ! ie ]>'
-                    string value = this.m_current.ScanToEnd(this.m_sb, "Recovering", ">"); // skip it
+                    string value = m_current.ScanToEnd(m_sb, "Recovering", ">"); // skip it
                     Log("Ignoring invalid markup '<!"+value+">");
                     return false;
                 }
                 else
                 {
-                    string name = this.m_current.ScanToken(this.m_sb, SgmlReader.declterm, false);
+                    string name = m_current.ScanToken(m_sb, SgmlReader.declterm, false);
                     if (string.Equals(name, "DOCTYPE", StringComparison.OrdinalIgnoreCase))
                     {
                         ParseDocType();
 
                         // In SGML DOCTYPE SYSTEM attribute is optional, but in XML it is required,
                         // therefore if there is no SYSTEM literal then add an empty one.
-                        if (this.GetAttribute("SYSTEM") == null && this.GetAttribute("PUBLIC") != null)
+                        if (GetAttribute("SYSTEM") == null && GetAttribute("PUBLIC") != null)
                         {
-                            this.m_node.AddAttribute("SYSTEM", "", '"', this.m_folding == CaseFolding.None);
+                            m_node.AddAttribute("SYSTEM", "", '"', m_folding == CaseFolding.None);
                         }
 
                         if (m_stripDocType)
@@ -1642,21 +1643,21 @@ namespace Sgml
                         }
                         else
                         {
-                            this.m_node.NodeType = XmlNodeType.DocumentType;
+                            m_node.NodeType = XmlNodeType.DocumentType;
                             return true;
                         }
                     }
                     else
                     {
                         Log("Invalid declaration '<!{0}...'.  Expecting '<!DOCTYPE' only.", name);
-                        this.m_current.ScanToEnd(null, "Recovering", ">"); // skip it
+                        m_current.ScanToEnd(null, "Recovering", ">"); // skip it
                         return false;
                     }
                 }
             } 
             else if (ch == '?')
             {
-                this.m_current.ReadChar();// consume the '?' character.
+                m_current.ReadChar();// consume the '?' character.
                 return ParsePI();
             }
             else if (ch == '/')
@@ -1671,8 +1672,8 @@ namespace Sgml
 
         private string ScanName(string terminators)
         {
-            string name = this.m_current.ScanToken(this.m_sb, terminators, false);
-            switch (this.m_folding)
+            string name = m_current.ScanToken(m_sb, terminators, false);
+            switch (m_folding)
             {
                 case CaseFolding.ToUpper:
                     name = name.ToUpperInvariant();
@@ -1707,9 +1708,9 @@ namespace Sgml
             {
                 if (SgmlReader.tagterm.IndexOf(ch) >= 0)
                 {
-                    this.m_sb.Length = 0;
-                    this.m_sb.Append('<');
-                    this.m_state = State.PartialText;
+                    m_sb.Length = 0;
+                    m_sb.Append('<');
+                    m_state = State.PartialText;
                     return false;
                 }
 
@@ -1726,17 +1727,17 @@ namespace Sgml
             Node n = Push(name, XmlNodeType.Element, null);
             n.IsEmpty = false;
             Validate(n);
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
             while (ch != Entity.EOF && ch != '>')
             {
                 if (ch == '/')
                 {
                     n.IsEmpty = true;
-                    ch = this.m_current.ReadChar();
+                    ch = m_current.ReadChar();
                     if (ch != '>')
                     {
                         Log("Expected empty start tag '/>' sequence instead of '{0}'", ch);
-                        this.m_current.ScanToEnd(null, "Recovering", ">");
+                        m_current.ScanToEnd(null, "Recovering", ">");
                         return false;
                     }
                     break;
@@ -1748,7 +1749,7 @@ namespace Sgml
                 }
 
                 string aname = ScanName(SgmlReader.aterm);
-                ch = this.m_current.SkipWhitespace();
+                ch = m_current.SkipWhitespace();
                 if (string.Equals(aname, ",", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(aname, "=", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(aname, ":", StringComparison.OrdinalIgnoreCase) ||
@@ -1763,25 +1764,25 @@ namespace Sgml
                 {
                     if (ch == '=' )
                     {
-                        this.m_current.ReadChar();
-                        ch = this.m_current.SkipWhitespace();
+                        m_current.ReadChar();
+                        ch = m_current.SkipWhitespace();
                     }
 
                     if (ch == '\'' || ch == '\"')
                     {
                         quote = ch;
-                        value = ScanLiteral(this.m_sb, ch);
+                        value = ScanLiteral(m_sb, ch);
                     }
                     else if (ch != '>')
                     {
                         string term = SgmlReader.avterm;
-                        value = this.m_current.ScanToken(this.m_sb, term, false);
+                        value = m_current.ScanToken(m_sb, term, false);
                     }
                 }
 
                 if (ValidAttributeName(aname))
                 {
-                    Attribute a = n.AddAttribute(aname, value ?? aname, quote, this.m_folding == CaseFolding.None);
+                    Attribute a = n.AddAttribute(aname, value ?? aname, quote, m_folding == CaseFolding.None);
                     if (a == null)
                     {
                         Log("Duplicate attribute '{0}' ignored", aname);
@@ -1792,28 +1793,28 @@ namespace Sgml
                     }
                 }
 
-                ch = this.m_current.SkipWhitespace();
+                ch = m_current.SkipWhitespace();
             }
 
             if (ch == Entity.EOF)
             {
-                this.m_current.Error("Unexpected EOF parsing start tag '{0}'", name);
+                m_current.Error("Unexpected EOF parsing start tag '{0}'", name);
             } 
             else if (ch == '>')
             {
-                this.m_current.ReadChar(); // consume '>'
+                m_current.ReadChar(); // consume '>'
             }
 
-            if (this.Depth == 1)
+            if (Depth == 1)
             {
-                if (this.m_rootCount == 1)
+                if (m_rootCount == 1)
                 {
                     // Hmmm, we found another root level tag, soooo, the only
                     // thing we can do to keep this a valid XML document is stop
-                    this.m_state = State.Eof;
+                    m_state = State.Eof;
                     return false;
                 }
-                this.m_rootCount++;
+                m_rootCount++;
             }
 
             ValidateContent(n);
@@ -1822,56 +1823,56 @@ namespace Sgml
 
         private bool ParseEndTag()
         {
-            this.m_state = State.EndTag;
-            this.m_current.ReadChar(); // consume '/' char.
-            string name = this.ScanName(SgmlReader.tagterm);
-            char ch = this.m_current.SkipWhitespace();
+            m_state = State.EndTag;
+            m_current.ReadChar(); // consume '/' char.
+            string name = ScanName(SgmlReader.tagterm);
+            char ch = m_current.SkipWhitespace();
             if (ch != '>')
             {
                 Log("Expected empty start tag '/>' sequence instead of '{0}'", ch);
-                this.m_current.ScanToEnd(null, "Recovering", ">");
+                m_current.ScanToEnd(null, "Recovering", ">");
             }
 
-            this.m_current.ReadChar(); // consume '>'
+            m_current.ReadChar(); // consume '>'
 
-            this.m_endTag = name;
+            m_endTag = name;
 
             // Make sure there's a matching start tag for it.                        
-            bool caseInsensitive = (this.m_folding == CaseFolding.None);
-            this.m_node = (Node)this.m_stack[this.m_stack.Count - 1];
-            for (int i = this.m_stack.Count - 1; i > 0; i--)
+            bool caseInsensitive = (m_folding == CaseFolding.None);
+            m_node = (Node)m_stack[m_stack.Count - 1];
+            for (int i = m_stack.Count - 1; i > 0; i--)
             {
-                Node n = (Node)this.m_stack[i];
+                Node n = (Node)m_stack[i];
                 if (string.Equals(n.Name, name, caseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
                 {
-                    this.m_endTag = n.Name;
+                    m_endTag = n.Name;
                     return true;
                 }
             }
 
             Log("No matching start tag for '</{0}>'", name);
-            this.m_state = State.Markup;
+            m_state = State.Markup;
             return false;
         }
 
         private bool ParseAspNet()
         {
-            string value = "<%" + this.m_current.ScanToEnd(this.m_sb, "AspNet", "%>") + "%>";
+            string value = "<%" + m_current.ScanToEnd(m_sb, "AspNet", "%>") + "%>";
             Push(null, XmlNodeType.CDATA, value);         
             return true;
         }
 
         private bool ParseComment()
         {
-            char ch = this.m_current.ReadChar();
+            char ch = m_current.ReadChar();
             if (ch != '-')
             {
                 Log("Expecting comment '<!--' but found {0}", ch);
-                this.m_current.ScanToEnd(null, "Comment", ">");
+                m_current.ScanToEnd(null, "Comment", ">");
                 return false;
             }
 
-            string value = this.m_current.ScanToEnd(this.m_sb, "Comment", "-->");
+            string value = m_current.ScanToEnd(m_sb, "Comment", "-->");
             
             // Make sure it's a valid comment!
             int i = value.IndexOf("--");
@@ -1941,10 +1942,10 @@ namespace Sgml
         private const string dtterm = " \t\r\n>";
         private void ParseDocType()
         {
-            char ch = this.m_current.SkipWhitespace();
-            string name = this.ScanName(SgmlReader.dtterm);
+            char ch = m_current.SkipWhitespace();
+            string name = ScanName(SgmlReader.dtterm);
             Push(name, XmlNodeType.DocumentType, null);
-            ch = this.m_current.SkipWhitespace();
+            ch = m_current.SkipWhitespace();
             if (ch != '>')
             {
                 string subset = "";
@@ -1953,74 +1954,74 @@ namespace Sgml
 
                 if (ch != '[')
                 {
-                    string token = this.m_current.ScanToken(this.m_sb, SgmlReader.dtterm, false);
+                    string token = m_current.ScanToken(m_sb, SgmlReader.dtterm, false);
                     if (string.Equals(token, "PUBLIC", StringComparison.OrdinalIgnoreCase))
                     {
-                        ch = this.m_current.SkipWhitespace();
+                        ch = m_current.SkipWhitespace();
                         if (ch == '\"' || ch == '\'')
                         {
-                            pubid = this.m_current.ScanLiteral(this.m_sb, ch);
-                            this.m_node.AddAttribute(token, pubid, ch, this.m_folding == CaseFolding.None);
+                            pubid = m_current.ScanLiteral(m_sb, ch);
+                            m_node.AddAttribute(token, pubid, ch, m_folding == CaseFolding.None);
                         }
                     } 
                     else if (!string.Equals(token, "SYSTEM", StringComparison.OrdinalIgnoreCase))
                     {
                         Log("Unexpected token in DOCTYPE '{0}'", token);
-                        this.m_current.ScanToEnd(null, "DOCTYPE", ">");
+                        m_current.ScanToEnd(null, "DOCTYPE", ">");
                     }
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                     if (ch == '\"' || ch == '\'')
                     {
                         token = "SYSTEM";
-                        syslit = this.m_current.ScanLiteral(this.m_sb, ch);
-                        this.m_node.AddAttribute(token, syslit, ch, this.m_folding == CaseFolding.None);  
+                        syslit = m_current.ScanLiteral(m_sb, ch);
+                        m_node.AddAttribute(token, syslit, ch, m_folding == CaseFolding.None);  
                     }
-                    ch = this.m_current.SkipWhitespace();
+                    ch = m_current.SkipWhitespace();
                 }
 
                 if (ch == '[')
                 {
-                    subset = this.m_current.ScanToEnd(this.m_sb, "Internal Subset", "]");
-                    this.m_node.Value = subset;
+                    subset = m_current.ScanToEnd(m_sb, "Internal Subset", "]");
+                    m_node.Value = subset;
                 }
 
-                ch = this.m_current.SkipWhitespace();
+                ch = m_current.SkipWhitespace();
                 if (ch != '>')
                 {
                     Log("Expecting end of DOCTYPE tag, but found '{0}'", ch);
-                    this.m_current.ScanToEnd(null, "DOCTYPE", ">");
+                    m_current.ScanToEnd(null, "DOCTYPE", ">");
                 }
 
-                if (this.m_dtd != null && !string.Equals(this.m_dtd.Name, name, StringComparison.OrdinalIgnoreCase))
+                if (m_dtd != null && !string.Equals(m_dtd.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     throw new InvalidOperationException("DTD does not match document type");
                 }
 
-                this.m_docType = name;
-                this.m_pubid = pubid;
-                this.m_syslit = syslit;
-                this.m_subset = subset;
-                LazyLoadDtd(this.m_current.ResolvedUri);
+                m_docType = name;
+                m_pubid = pubid;
+                m_syslit = syslit;
+                m_subset = subset;
+                LazyLoadDtd(m_current.ResolvedUri);
             }
 
-            this.m_current.ReadChar();
+            m_current.ReadChar();
         }
 
         private const string piterm = " \t\r\n?";
         private bool ParsePI()
         {
-            string name = this.m_current.ScanToken(this.m_sb, SgmlReader.piterm, false);
+            string name = m_current.ScanToken(m_sb, SgmlReader.piterm, false);
             string value = null;
-            if (this.m_current.Lastchar != '?')
+            if (m_current.Lastchar != '?')
             {
                 // Notice this is not "?>".  This is because Office generates bogus PI's that end with "/>".
-                value = this.m_current.ScanToEnd(this.m_sb, "Processing Instruction", ">");
+                value = m_current.ScanToEnd(m_sb, "Processing Instruction", ">");
                 value = value.TrimEnd('/');
             }
             else
             {
                 // error recovery.
-                value = this.m_current.ScanToEnd(this.m_sb, "Processing Instruction", ">");
+                value = m_current.ScanToEnd(m_sb, "Processing Instruction", ">");
             }
 
             // check if the name has a prefix; if so, ignore it
@@ -2041,51 +2042,51 @@ namespace Sgml
 
         private bool ParseText(char ch, bool newtext)
         {
-            bool ws = !newtext || this.m_current.IsWhitespace;
+            bool ws = !newtext || m_current.IsWhitespace;
             if (newtext)
-                this.m_sb.Length = 0;
+                m_sb.Length = 0;
 
             //this.sb.Append(ch);
             //ch = this.current.ReadChar();
-            this.m_state = State.Text;
+            m_state = State.Text;
             while (ch != Entity.EOF)
             {
                 if (ch == '<')
                 {
-                    ch = this.m_current.ReadChar();
+                    ch = m_current.ReadChar();
                     if (ch == '/' || ch == '!' || ch == '?' || char.IsLetter(ch))
                     {
                         // Hit a tag, so return XmlNodeType.Text token
                         // and remember we partially started a new tag.
-                        this.m_state = State.PartialTag;
-                        this.m_partial = ch;
+                        m_state = State.PartialTag;
+                        m_partial = ch;
                         break;
                     } 
                     else
                     {
                         // not a tag, so just proceed.
-                        this.m_sb.Append('<');
-                        this.m_sb.Append(ch);
+                        m_sb.Append('<');
+                        m_sb.Append(ch);
                         ws = false;
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                     }
                 } 
                 else if (ch == '&')
                 {
-                    ExpandEntity(this.m_sb, '<');
+                    ExpandEntity(m_sb, '<');
                     ws = false;
-                    ch = this.m_current.Lastchar;
+                    ch = m_current.Lastchar;
                 }
                 else
                 {
-                    if (!this.m_current.IsWhitespace)
+                    if (!m_current.IsWhitespace)
                         ws = false;
-                    this.m_sb.Append(ch);
-                    ch = this.m_current.ReadChar();
+                    m_sb.Append(ch);
+                    ch = m_current.ReadChar();
                 }
             }
 
-            string value = this.m_sb.ToString();
+            string value = m_sb.ToString();
             Push(null, XmlNodeType.Text, value);
             return ws;
         }
@@ -2103,22 +2104,22 @@ namespace Sgml
         private string ScanLiteral(StringBuilder sb, char quote)
         {
             sb.Length = 0;
-            char ch = this.m_current.ReadChar();
+            char ch = m_current.ReadChar();
             while (ch != Entity.EOF && ch != quote && ch != '>')
             {
                 if (ch == '&')
                 {
                     ExpandEntity(sb, quote);
-                    ch = this.m_current.Lastchar;
+                    ch = m_current.Lastchar;
                 }               
                 else
                 {
                     sb.Append(ch);
-                    ch = this.m_current.ReadChar();
+                    ch = m_current.ReadChar();
                 }
             }
             if(ch == quote) {
-                this.m_current.ReadChar(); // consume end quote.
+                m_current.ReadChar(); // consume end quote.
             }
             return sb.ToString();
         }
@@ -2130,22 +2131,22 @@ namespace Sgml
             // text is not returned as text but CDATA (since it may contain angle brackets).
             // And initial whitespace is ignored.  It terminates when we hit the
             // end tag for the current CDATA node (e.g. </style>).
-            bool ws = this.m_current.IsWhitespace;
-            this.m_sb.Length = 0;
-            char ch = this.m_current.Lastchar;
-            if (this.m_partial != '\0')
+            bool ws = m_current.IsWhitespace;
+            m_sb.Length = 0;
+            char ch = m_current.Lastchar;
+            if (m_partial != '\0')
             {
                 Pop(); // pop the CDATA
-                switch (this.m_partial)
+                switch (m_partial)
                 {
                     case '!':
-                        this.m_partial = ' '; // and pop the comment next time around
+                        m_partial = ' '; // and pop the comment next time around
                         return ParseComment();
                     case '?':
-                        this.m_partial = ' '; // and pop the PI next time around
+                        m_partial = ' '; // and pop the PI next time around
                         return ParsePI();
                     case '/':
-                        this.m_state = State.EndTag;
+                        m_state = State.EndTag;
                         return true;    // we are done!
                     case ' ':
                         break; // means we just needed to pop the Comment, PI or CDATA.
@@ -2158,24 +2159,24 @@ namespace Sgml
             {
                 if (ch == '<')
                 {
-                    ch = this.m_current.ReadChar();
+                    ch = m_current.ReadChar();
                     if (ch == '!')
                     {
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                         if (ch == '-')
                         {
                             // return what CDATA we have accumulated so far
                             // then parse the comment and return to here.
                             if (ws)
                             {
-                                this.m_partial = ' '; // pop comment next time through
+                                m_partial = ' '; // pop comment next time through
                                 return ParseComment();
                             } 
                             else
                             {
                                 // return what we've accumulated so far then come
                                 // back in and parse the comment.
-                                this.m_partial = '!';
+                                m_partial = '!';
                                 break; 
                             }
 #if FIX
@@ -2193,32 +2194,32 @@ namespace Sgml
                         else
                         {
                             // not a comment, so ignore it and continue on.
-                            this.m_sb.Append('<');
-                            this.m_sb.Append('!');
-                            this.m_sb.Append(ch);
+                            m_sb.Append('<');
+                            m_sb.Append('!');
+                            m_sb.Append(ch);
                             ws = false;
                         }
                     } 
                     else if (ch == '?')
                     {
                         // processing instruction.
-                        this.m_current.ReadChar();// consume the '?' character.
+                        m_current.ReadChar();// consume the '?' character.
                         if (ws)
                         {
-                            this.m_partial = ' '; // pop PI next time through
+                            m_partial = ' '; // pop PI next time through
                             return ParsePI();
                         } 
                         else
                         {
-                            this.m_partial = '?';
+                            m_partial = '?';
                             break;
                         }
                     }
                     else if (ch == '/')
                     {
                         // see if this is the end tag for this CDATA node.
-                        string temp = this.m_sb.ToString();
-                        if (ParseEndTag() && string.Equals(this.m_endTag, this.m_node.Name, StringComparison.OrdinalIgnoreCase))
+                        string temp = m_sb.ToString();
+                        if (ParseEndTag() && string.Equals(m_endTag, m_node.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             if (ws || string.IsNullOrEmpty(temp))
                             {
@@ -2228,51 +2229,51 @@ namespace Sgml
                             else
                             {
                                 // return CDATA text then the end tag
-                                this.m_partial = '/';
-                                this.m_sb.Length = 0; // restore buffer!
-                                this.m_sb.Append(temp);
-                                this.m_state = State.CData;
+                                m_partial = '/';
+                                m_sb.Length = 0; // restore buffer!
+                                m_sb.Append(temp);
+                                m_state = State.CData;
                                 break;
                             }
                         } 
                         else
                         {
                             // wrong end tag, so continue on.
-                            this.m_sb.Length = 0; // restore buffer!
-                            this.m_sb.Append(temp);
-                            this.m_sb.Append("</" + this.m_endTag + ">");
+                            m_sb.Length = 0; // restore buffer!
+                            m_sb.Append(temp);
+                            m_sb.Append("</" + m_endTag + ">");
                             ws = false;
 
                             // NOTE (steveb): we have one character in the buffer that we need to process next
-                            ch = this.m_current.Lastchar;
+                            ch = m_current.Lastchar;
                             continue;
                         }
                     }
                     else
                     {
                         // must be just part of the CDATA block, so proceed.
-                        this.m_sb.Append('<');
-                        this.m_sb.Append(ch);
+                        m_sb.Append('<');
+                        m_sb.Append(ch);
                         ws = false;
                     }
                 } 
                 else
                 {
-                    if (!this.m_current.IsWhitespace && ws)
+                    if (!m_current.IsWhitespace && ws)
                         ws = false;
-                    this.m_sb.Append(ch);
+                    m_sb.Append(ch);
                 }
 
-                ch = this.m_current.ReadChar();
+                ch = m_current.ReadChar();
             }
 
             // NOTE (steveb): check if we reached EOF, which means it's over
             if(ch == Entity.EOF) {
-                this.m_state = State.Eof;
+                m_state = State.Eof;
                 return false;
             }
 
-            string value = this.m_sb.ToString();
+            string value = m_sb.ToString();
 
             // NOTE (steveb): replace any nested CDATA sections endings
             value = value.Replace("<![CDATA[", string.Empty);
@@ -2280,80 +2281,80 @@ namespace Sgml
             value = value.Replace("/**/", string.Empty);
 
             Push(null, XmlNodeType.CDATA, value);
-            if (this.m_partial == '\0')
-                this.m_partial = ' ';// force it to pop this CDATA next time in.
+            if (m_partial == '\0')
+                m_partial = ' ';// force it to pop this CDATA next time in.
 
             return true;
         }
 
         private void ExpandEntity(StringBuilder sb, char terminator)
         {
-            char ch = this.m_current.ReadChar();
+            char ch = m_current.ReadChar();
             if (ch == '#')
             {
-                string charent = this.m_current.ExpandCharEntity();
+                string charent = m_current.ExpandCharEntity();
                 sb.Append(charent);
-                ch = this.m_current.Lastchar;
+                ch = m_current.Lastchar;
             } 
             else
             {
-                this.m_name.Length = 0;
+                m_name.Length = 0;
                 while (ch != Entity.EOF &&
-                    (char.IsLetter(ch) || ch == '_' || ch == '-') || ((this.m_name.Length > 0) && char.IsDigit(ch)))
+                    (char.IsLetter(ch) || ch == '_' || ch == '-') || ((m_name.Length > 0) && char.IsDigit(ch)))
                 {
-                    this.m_name.Append(ch);
-                    ch = this.m_current.ReadChar();
+                    m_name.Append(ch);
+                    ch = m_current.ReadChar();
                 }
-                string name = this.m_name.ToString();
+                string name = m_name.ToString();
 
                 // TODO (steveb): don't lookup amp, gt, lt, quote
                 switch(name) {
                 case "amp":
                     sb.Append("&");
                     if(ch != terminator && ch != '&' && ch != Entity.EOF)
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                     return;
                 case "lt":
                     sb.Append("<");
                     if(ch != terminator && ch != '&' && ch != Entity.EOF)
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                     return;
                 case "gt":
                     sb.Append(">");
                     if(ch != terminator && ch != '&' && ch != Entity.EOF)
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                     return;
                 case "quot":
                     sb.Append("\"");
                     if(ch != terminator && ch != '&' && ch != Entity.EOF)
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                     return;
                 case "apos":
                     sb.Append("'");
                     if(ch != terminator && ch != '&' && ch != Entity.EOF)
-                        ch = this.m_current.ReadChar();
+                        ch = m_current.ReadChar();
                     return;
                 }
 
-                if (this.m_dtd != null && !string.IsNullOrEmpty(name))
+                if (m_dtd != null && !string.IsNullOrEmpty(name))
                 {
-                    Entity e = (Entity)this.m_dtd.FindEntity(name);
+                    Entity e = (Entity)m_dtd.FindEntity(name);
                     if (e != null)
                     {
                         if (e.IsInternal)
                         {
                             sb.Append(e.Literal);
                             if (ch != terminator && ch != '&' && ch != Entity.EOF)
-                                ch = this.m_current.ReadChar();
+                                ch = m_current.ReadChar();
 
                             return;
                         } 
                         else
                         {
-                            Entity ex = new Entity(name, e.PublicId, e.Uri, this.m_current.Proxy);
-                            e.Open(this.m_current, new Uri(e.Uri));
-                            this.m_current = ex;
-                            this.m_current.ReadChar();
+                            Entity ex = new Entity(name, e.PublicId, e.Uri, m_current.Proxy);
+                            e.Open(m_current, new Uri(e.Uri));
+                            m_current = ex;
+                            m_current.ReadChar();
                             return;
                         }
                     } 
@@ -2369,7 +2370,7 @@ namespace Sgml
                 if(ch != terminator && ch != '&' && ch != Entity.EOF)
                 {
                     sb.Append(ch);
-                    ch = this.m_current.ReadChar();
+                    ch = m_current.ReadChar();
                 }
             }
         }
@@ -2382,7 +2383,7 @@ namespace Sgml
         {
             get
             {
-                return this.m_state == State.Eof;
+                return m_state == State.Eof;
             }
         }
 
@@ -2391,16 +2392,16 @@ namespace Sgml
         /// </summary>
         public override void Close()
         {
-            if (this.m_current != null)
+            if (m_current != null)
             {
-                this.m_current.Close();
-                this.m_current = null;
+                m_current.Close();
+                m_current = null;
             }
 
-            if (this.m_log != null)
+            if (m_log != null)
             {
-                this.m_log.Close();
-                this.m_log = null;
+                m_log.Close();
+                m_log = null;
             }
         }
 
@@ -2412,9 +2413,9 @@ namespace Sgml
         {
             get
             {
-                if (this.m_state == State.Initial)
+                if (m_state == State.Initial)
                     return ReadState.Initial;
-                else if (this.m_state == State.Eof)
+                else if (m_state == State.Eof)
                     return ReadState.EndOfFile;
                 else
                     return ReadState.Interactive;
@@ -2427,28 +2428,28 @@ namespace Sgml
         /// <returns>The contents of the element or an empty string.</returns>
         public override string ReadString()
         {
-            if (this.m_node.NodeType == XmlNodeType.Element)
+            if (m_node.NodeType == XmlNodeType.Element)
             {
-                this.m_sb.Length = 0;
+                m_sb.Length = 0;
                 while (Read())
                 {
-                    switch (this.NodeType)
+                    switch (NodeType)
                     {
                         case XmlNodeType.CDATA:
                         case XmlNodeType.SignificantWhitespace:
                         case XmlNodeType.Whitespace:
                         case XmlNodeType.Text:
-                            this.m_sb.Append(this.m_node.Value);
+                            m_sb.Append(m_node.Value);
                             break;
                         default:
-                            return this.m_sb.ToString();
+                            return m_sb.ToString();
                     }
                 }
 
-                return this.m_sb.ToString();
+                return m_sb.ToString();
             }
 
-            return this.m_node.Value;
+            return m_node.Value;
         }
 
         /// <summary>
@@ -2464,18 +2465,18 @@ namespace Sgml
             StringWriter sw = new StringWriter(CultureInfo.InvariantCulture);
             XmlTextWriter xw = new XmlTextWriter(sw);
             xw.Formatting = Formatting.Indented;
-            switch (this.NodeType)
+            switch (NodeType)
             {
                 case XmlNodeType.Element:
                     Read();
-                    while (!this.EOF && this.NodeType != XmlNodeType.EndElement)
+                    while (!EOF && NodeType != XmlNodeType.EndElement)
                     {
                         xw.WriteNode(this, true);
                     }
                     Read(); // consume the end tag
                     break;
                 case XmlNodeType.Attribute:
-                    sw.Write(this.Value);
+                    sw.Write(Value);
                     break;
                 default:
                     // return empty string according to XmlReader spec.
@@ -2543,12 +2544,12 @@ namespace Sgml
         /// </returns>
         public override bool ReadAttributeValue()
         {
-            if (this.m_state == State.Attr)
+            if (m_state == State.Attr)
             {
-                this.m_state = State.AttrValue;
+                m_state = State.AttrValue;
                 return true;
             }
-            else if (this.m_state == State.AttrValue)
+            else if (m_state == State.AttrValue)
             {
                 return false;
             }
@@ -2558,9 +2559,9 @@ namespace Sgml
 
         private void Validate(Node node)
         {
-            if (this.m_dtd != null)
+            if (m_dtd != null)
             {
-                ElementDecl e = this.m_dtd.FindElement(node.Name);
+                ElementDecl e = m_dtd.FindElement(node.Name);
                 if (e != null)
                 {
                     node.DtdType = e;
@@ -2619,20 +2620,20 @@ namespace Sgml
                 }
             }
 
-            if (this.m_dtd != null)
+            if (m_dtd != null)
             {
                 // See if this element is allowed inside the current element.
                 // If it isn't, then auto-close elements until we find one
                 // that it is allowed to be in.                                  
                 string name = node.Name.ToUpperInvariant(); // DTD is in upper case
                 int i = 0;
-                int top = this.m_stack.Count - 2;
+                int top = m_stack.Count - 2;
                 if (node.DtdType != null) { 
                     // it is a known element, let's see if it's allowed in the
                     // current context.
                     for (i = top; i > 0; i--)
                     {
-                        Node n = (Node)this.m_stack[i];
+                        Node n = (Node)m_stack[i];
                         if (n.IsEmpty)
                             continue; // we'll have to pop this one
                         ElementDecl f = n.DtdType;
@@ -2640,9 +2641,9 @@ namespace Sgml
                         {
                             if ((i == 2) && string.Equals(f.Name, "BODY", StringComparison.OrdinalIgnoreCase)) // NOTE (steveb): never close the BODY tag too early
                                 break;
-                            else if (string.Equals(f.Name, this.m_dtd.Name, StringComparison.OrdinalIgnoreCase))
+                            else if (string.Equals(f.Name, m_dtd.Name, StringComparison.OrdinalIgnoreCase))
                                 break; // can't pop the root element.
-                            else if (f.CanContain(name, this.m_dtd))
+                            else if (f.CanContain(name, m_dtd))
                             {
                                 break;
                             }
@@ -2671,7 +2672,7 @@ namespace Sgml
                 }
                 else if (i < top)
                 {
-                    Node n = (Node)this.m_stack[top];
+                    Node n = (Node)m_stack[top];
                     if (i == top - 1 && string.Equals(name, n.Name, StringComparison.OrdinalIgnoreCase))
                     {
                         // e.g. p not allowed inside p, not an interesting error.
@@ -2682,17 +2683,17 @@ namespace Sgml
                         string closing = "";
                         for (int k = top; k >= i+1; k--) {
                             if (closing != "") closing += ",";
-                            Node n2 = (Node)this.m_stack[k];
+                            Node n2 = (Node)m_stack[k];
                             closing += "<" + n2.Name + ">";
                         }
                         Log("Element '{0}' not allowed inside '{1}', closing {2}.", name, n.Name, closing);
 #endif
                     }
 
-                    this.m_state = State.AutoClose;
-                    this.m_newnode = node;
+                    m_state = State.AutoClose;
+                    m_newnode = node;
                     Pop(); // save this new node until we pop the others
-                    this.m_poptodepth = i + 1;
+                    m_poptodepth = i + 1;
                 }
             }
         }
