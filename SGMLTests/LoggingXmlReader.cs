@@ -23,8 +23,6 @@
 using System;
 using System.IO;
 using System.Xml;
-using log4net;
-using NUnit.Framework;
 using Sgml;
 
 namespace SGMLTests {
