@@ -20,14 +20,14 @@
  * 
  */
 
+using Sgml;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Xml;
-using Sgml;
 using Xunit;
 
-namespace SGMLTests {
+namespace SGMLTests
+{
 
     public class Tests : TestsLogic    {
 

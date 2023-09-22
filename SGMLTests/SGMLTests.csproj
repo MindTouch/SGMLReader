@@ -8,12 +8,77 @@
     <RootNamespace>SgmlTests</RootNamespace>
     <Company>MindTouch, Inc.</Company>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <TargetFrameworks>netstandard2.0;net6</TargetFrameworks>
+    <TargetFrameworks>net6</TargetFrameworks>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Resources\01.test" />
+    <None Remove="Resources\02.test" />
+    <None Remove="Resources\03.test" />
+    <None Remove="Resources\04.test" />
+    <None Remove="Resources\05.test" />
+    <None Remove="Resources\06.test" />
+    <None Remove="Resources\07.test" />
+    <None Remove="Resources\08.test" />
+    <None Remove="Resources\09.test" />
+    <None Remove="Resources\10.test" />
+    <None Remove="Resources\11.test" />
+    <None Remove="Resources\12.test" />
+    <None Remove="Resources\13.test" />
+    <None Remove="Resources\14.test" />
+    <None Remove="Resources\15.test" />
+    <None Remove="Resources\16.test" />
+    <None Remove="Resources\17.test" />
+    <None Remove="Resources\18.test" />
+    <None Remove="Resources\19.test" />
+    <None Remove="Resources\20.test" />
+    <None Remove="Resources\21.test" />
+    <None Remove="Resources\22.test" />
+    <None Remove="Resources\23.test" />
+    <None Remove="Resources\24.test" />
+    <None Remove="Resources\25.test" />
+    <None Remove="Resources\26.test" />
+    <None Remove="Resources\27.test" />
+    <None Remove="Resources\28.test" />
+    <None Remove="Resources\29.test" />
+    <None Remove="Resources\30.test" />
+    <None Remove="Resources\31.test" />
+    <None Remove="Resources\32.test" />
+    <None Remove="Resources\33.test" />
+    <None Remove="Resources\34.test" />
+    <None Remove="Resources\35.test" />
+    <None Remove="Resources\36.test" />
+    <None Remove="Resources\37.test" />
+    <None Remove="Resources\38.test" />
+    <None Remove="Resources\39.test" />
+    <None Remove="Resources\40.test" />
+    <None Remove="Resources\41.test" />
+    <None Remove="Resources\42.test" />
+    <None Remove="Resources\43.test" />
+    <None Remove="Resources\44.test" />
+    <None Remove="Resources\45.test" />
+    <None Remove="Resources\46.test" />
+    <None Remove="Resources\47.test" />
+    <None Remove="Resources\48.test" />
+    <None Remove="Resources\49.test" />
+    <None Remove="Resources\50.test" />
+    <None Remove="Resources\51.test" />
+    <None Remove="Resources\52.test" />
+    <None Remove="Resources\53.test" />
+    <None Remove="Resources\54.test" />
+    <None Remove="Resources\55.test" />
+    <None Remove="Resources\56.test" />
+    <None Remove="Resources\57.test" />
+    <None Remove="Resources\58.test" />
+    <None Remove="Resources\59.test" />
+    <None Remove="Resources\60.test" />
+    <None Remove="Resources\61.test" />
+    <None Remove="Resources\original.test" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="sgmlreader.snk" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="xunit" Version="2.5.1" />
     <PackageReference Include="xunit.runner.console" Version="2.5.1">
       <PrivateAssets>all</PrivateAssets>
@@ -27,5 +92,193 @@
   <ItemGroup>
     <ProjectReference Include="..\SgmlReaderDll\SgmlReaderDll.csproj" />
     <ProjectReference Include="..\SgmlReader\SgmlReader.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\01.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\02.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\03.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\04.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\05.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\06.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\07.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\08.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\09.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\10.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\11.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\12.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\13.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\14.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\15.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\16.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\17.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\18.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\19.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\20.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\21.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\22.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\23.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\24.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\25.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\26.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\27.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\28.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\29.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\30.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\31.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\32.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\33.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\34.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\35.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\36.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\37.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\38.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\39.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\40.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\41.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\42.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\43.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\44.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\45.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\46.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\47.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\48.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\49.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\50.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\51.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\52.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\53.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\54.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\55.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\56.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\57.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\58.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\59.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\60.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\61.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\original.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

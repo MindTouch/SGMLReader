@@ -22,6 +22,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 using Sgml;
 using Xunit;
@@ -89,16 +90,14 @@ namespace SGMLTests {
         }
 
         private static void ReadTest(string name, out string before, out string after) {
-            var assembly = typeof(Tests).Assembly;
-            var stream = assembly.GetManifestResourceStream(assembly.FullName.Split(',')[0] + ".Resources." + name);
-            if(stream == null) {
+            var stream = File.OpenRead(Path.Combine("Resources", name));
+            if (stream == null){
                 throw new FileNotFoundException("unable to load requested resource: " + name);
             }
-            using(var sr = new StreamReader(stream)) {
-                var test = sr.ReadToEnd().Split('`');
-                before = test[0];
-                after = test[1];
-            }
+            using StreamReader reader = new(stream);
+            var test = reader.ReadToEnd().Split('`');
+            before = test[0];
+            after = test[1];
         }
 
         private static string RunTest(CaseFolding caseFolding, string doctype, bool format, string source, XmlReaderTestCallback callback) {
