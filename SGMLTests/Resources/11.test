@@ -1,9 +1,0 @@
-﻿<html>
-<body><a href="http://www.cnn.com/"' title="cnn.com">cnn</a></body>
-</html>
-`
-<html>
-  <body>
-    <a href="http://www.cnn.com/">cnn</a>
-  </body>
-</html>
